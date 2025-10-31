@@ -2,6 +2,7 @@ using UserManagement.Companies.Dtos;
 using UserManagement.Companies.Features.CreatingCompany.V1;
 using UserManagement.Companies.Features.GettingCompanies.V1;
 using UserManagement.Companies.Models;
+using UserManagement.Industries.Dtos;
 
 namespace UserManagement.Companies.Features;
 
@@ -11,7 +12,13 @@ public static class CompanyMappings
     {
         ArgumentNullException.ThrowIfNull(company);
 
-        return new CompanyDto(company.Id, company.Name, company.IndustryId);
+        return new CompanyDto(
+            company.Id,
+            company.Name,
+            company?.Industry != null
+                ? new IndustryDto(company.Industry.Id, company.Industry.Name, company.Industry.Description)
+                : null
+        );
     }
 
     public static Company ToModel(this CreateCompanyCommand command, Guid id)
