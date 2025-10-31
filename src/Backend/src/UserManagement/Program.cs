@@ -14,7 +14,5 @@ app.Run();
 
 namespace UserManagement
 {
-    public partial class Program
-    {
-    }
+    public partial class Program { }
 }

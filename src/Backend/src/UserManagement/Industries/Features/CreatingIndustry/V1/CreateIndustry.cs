@@ -55,6 +55,9 @@ public class CreateIndustryEndpoint : IMinimalEndpoint
             )
             .WithApiVersionSet(builder.NewApiVersionSet("Industry").Build())
             .WithName("CreateIndustry")
+            .Produces<CreateIndustryResponseDto>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .WithOpenApi()
             .HasApiVersion(1.0);
 
@@ -62,7 +65,7 @@ public class CreateIndustryEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CreateIndustryHandler : ICommandHandler<CreateIndustryCommand, CreateIndustryResult>
+public class CreateIndustryHandler : ICommandHandler<CreateIndustryCommand, CreateIndustryResult>
 {
     private readonly UserManagementDbContext _dbContext;
 

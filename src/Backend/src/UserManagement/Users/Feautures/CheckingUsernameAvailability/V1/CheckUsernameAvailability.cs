@@ -1,5 +1,6 @@
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Web;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Data;
@@ -13,6 +14,22 @@ public record CheckUsernameAvailabilityResponseDto(bool IsAvailable);
 public record CheckUsernameAvailabilityCommand(string Username) : IQuery<CheckUsernameAvailabilityResult>;
 
 public record CheckUsernameAvailabilityResult(bool IsAvailable);
+
+public class CheckUsernameAvailabilityCommandValidator : AbstractValidator<CheckUsernameAvailabilityCommand>
+{
+    public CheckUsernameAvailabilityCommandValidator()
+    {
+        RuleFor(x => x.Username)
+            .NotEmpty()
+            .WithMessage("Username is required")
+            .MinimumLength(3)
+            .WithMessage("Username must be at least 3 characters")
+            .MaximumLength(50)
+            .WithMessage("Username must not exceed 50 characters")
+            .Matches(@"^[a-zA-Z0-9_.]+$")
+            .WithMessage("Username can only contain letters, numbers, underscores and periods");
+    }
+}
 
 public class CheckUsernameAvailabilityEndpoint : IMinimalEndpoint
 {
@@ -37,6 +54,8 @@ public class CheckUsernameAvailabilityEndpoint : IMinimalEndpoint
             )
             .WithApiVersionSet(builder.NewApiVersionSet("User").Build())
             .WithName("CheckUsernameAvailability")
+            .Produces<CheckUsernameAvailabilityResponseDto>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithOpenApi()
             .HasApiVersion(1.0);
 
@@ -44,7 +63,7 @@ public class CheckUsernameAvailabilityEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CheckUsernameAvailabilityHandler
+public class CheckUsernameAvailabilityHandler
     : IQueryHandler<CheckUsernameAvailabilityCommand, CheckUsernameAvailabilityResult>
 {
     private readonly UserManagementDbContext _dbContext;
@@ -61,15 +80,10 @@ internal class CheckUsernameAvailabilityHandler
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(command.Username);
 
-        if (command.Username.Length < 3)
-        {
-            return new CheckUsernameAvailabilityResult(false);
-        }
-
         var usernameExists = await _dbContext
             .Users.AsNoTracking()
             .AnyAsync(x => x.UserName == command.Username, cancellationToken);
 
-        return new CheckUsernameAvailabilityResult(!usernameExists);
+        return new CheckUsernameAvailabilityResult(usernameExists);
     }
 }

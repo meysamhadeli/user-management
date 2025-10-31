@@ -1,5 +1,6 @@
 using UserManagement.Companies.Dtos;
 using UserManagement.Companies.Features.CreatingCompany.V1;
+using UserManagement.Companies.Features.GettingCompanies.V1;
 using UserManagement.Companies.Models;
 
 namespace UserManagement.Companies.Features;
@@ -10,12 +11,7 @@ public static class CompanyMappings
     {
         ArgumentNullException.ThrowIfNull(company);
 
-        return new CompanyDto(company.Id, company.Name, company.IndustryId, company.Users.Count);
-    }
-
-    public static List<CompanyDto> ToDto(this IEnumerable<Company> companies)
-    {
-        return companies.Select(ToDto).ToList();
+        return new CompanyDto(company.Id, company.Name, company.IndustryId);
     }
 
     public static Company ToModel(this CreateCompanyCommand command, Guid id)
@@ -28,6 +24,24 @@ public static class CompanyMappings
             Name = command.Name,
             IndustryId = command.IndustryId,
             CreatedAt = DateTime.UtcNow,
+        };
+    }
+
+    public static List<CompanyDto> ToDto(this IEnumerable<Company> companies)
+    {
+        return companies.Select(ToDto).ToList();
+    }
+
+    public static GetCompaniesQuery ToQuery(this GetCompaniesRequestDto request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return new GetCompaniesQuery
+        {
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            Filters = request.Filters,
+            SortOrder = request.SortOrder,
         };
     }
 }

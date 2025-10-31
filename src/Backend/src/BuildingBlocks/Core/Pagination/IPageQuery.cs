@@ -1,7 +1,6 @@
+using BuildingBlocks.Core.CQRS;
+
 namespace BuildingBlocks.Core.Pagination;
 
-using MediatR;
-
-public interface IPageQuery<out TResponse> : IPageRequest, IRequest<TResponse>
-    where TResponse : class
-{ }
+public interface IPageQuery<out TResponse> : IPageRequest, IQuery<TResponse>
+    where TResponse : class { }

@@ -108,6 +108,10 @@ public class CompleteUserRegistrationEndpoint : IMinimalEndpoint
             )
             .WithApiVersionSet(builder.NewApiVersionSet("User").Build())
             .WithName("CompleteUserRegistration")
+            .Produces<CompleteUserRegistrationResponseDto>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .WithOpenApi()
             .HasApiVersion(1.0);
 
@@ -115,7 +119,7 @@ public class CompleteUserRegistrationEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CompleteUserRegistrationHandler
+public class CompleteUserRegistrationHandler
     : ICommandHandler<CompleteUserRegistrationCommand, CompleteUserRegistrationResult>
 {
     private readonly UserManagementDbContext _dbContext;

@@ -51,6 +51,10 @@ public class CreateCompanyEndpoint : IMinimalEndpoint
             )
             .WithApiVersionSet(builder.NewApiVersionSet("Company").Build())
             .WithName("CreateCompany")
+            .Produces<CreateCompanyResponseDto>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .WithOpenApi()
             .HasApiVersion(1.0);
 
@@ -58,7 +62,7 @@ public class CreateCompanyEndpoint : IMinimalEndpoint
     }
 }
 
-internal class CreateCompanyHandler : ICommandHandler<CreateCompanyCommand, CreateCompanyResult>
+public class CreateCompanyHandler : ICommandHandler<CreateCompanyCommand, CreateCompanyResult>
 {
     private readonly UserManagementDbContext _dbContext;
 
@@ -85,13 +89,7 @@ internal class CreateCompanyHandler : ICommandHandler<CreateCompanyCommand, Crea
             throw new CompanyAlreadyExistsException(command.Name);
         }
 
-        var company = new Company
-        {
-            Id = command.Id,
-            Name = command.Name,
-            IndustryId = command.IndustryId,
-            CreatedAt = DateTime.UtcNow,
-        };
+        var company = command.ToModel(command.Id);
 
         await _dbContext.Companies.AddAsync(company, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
