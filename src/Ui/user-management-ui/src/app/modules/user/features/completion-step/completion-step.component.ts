@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -27,6 +28,7 @@ export class CompletionStepComponent implements OnInit {
   private wizardService = inject(RegistrationWizardService);
   private userService = inject(UserService);
   private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   isLoading = false;
   registrationData: any;
@@ -40,7 +42,7 @@ export class CompletionStepComponent implements OnInit {
 
     const registrationData = {
       ...this.registrationData.user,
-      companyId: this.registrationData.company.industryId,
+      companyId: this.registrationData.company.companyId,
       acceptTermsOfService: this.registrationData.terms.acceptTermsOfService,
       acceptPrivacyPolicy: this.registrationData.terms.acceptPrivacyPolicy
     };
@@ -49,6 +51,11 @@ export class CompletionStepComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         this.notificationService.showSuccess('Registration completed successfully!');
+        
+        // Reset the wizard to clear all data
+        this.wizardService.resetWizard();
+        
+        // Emit completion event
         this.complete.emit();
       },
       error: (error) => {

@@ -10,6 +10,7 @@ import { UserStepComponent } from '../user-step/user-step.component';
 import { SummaryStepComponent } from '../summary-step/summary-step.component';
 import { CompletionStepComponent } from '../completion-step/completion-step.component';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-registration-wizard',
@@ -32,6 +33,7 @@ export class RegistrationWizardComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private wizardService = inject(RegistrationWizardService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
 
   // Form groups for each step (required for linear stepper)
@@ -109,8 +111,38 @@ export class RegistrationWizardComponent implements OnInit {
   }
 
   onRegistrationComplete(): void {
+    // Reset all forms and go back to step 1
+    this.resetWizard();
+  }
+
+  resetWizard(): void {
+    // Reset the wizard service
     this.wizardService.resetWizard();
-    this.router.navigate(['/login']);
+    
+    // Reset all forms
+    this.companyStepForm.reset({
+      name: '',
+      companyId: '',
+      industryId: '',
+      industryName: ''
+    });
+    
+    this.userStepForm.reset({
+      firstName: '',
+      lastName: '',
+      userName: '',
+      email: '',
+      password: '',
+      passwordRepetition: ''
+    });
+    
+    this.termsStepForm.reset({
+      acceptTermsOfService: false,
+      acceptPrivacyPolicy: false
+    });
+    
+    // Reset stepper to first step
+    this.stepper.reset();
   }
 
   onStepChange(event: any): void {

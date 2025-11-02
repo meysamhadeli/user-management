@@ -1,7 +1,7 @@
 <div class="p-6">
   <div class="text-center mb-6">
-    <h2 class="text-2xl font-bold text-gray-900 mb-2">Complete Registration</h2>
-    <p class="text-gray-600">Step 4 of 4 - Finalize your registration</p>
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Registration Complete</h2>
+    <p class="text-gray-600">Step 4 of 4 - Your registration has been processed</p>
   </div>
 
   <div class="space-y-6">
@@ -10,38 +10,40 @@
     <mat-card class="p-6 border border-green-200 bg-green-50">
       <div class="text-center">
         <mat-icon class="!w-16 !h-16 text-green-600 mb-4">check_circle</mat-icon>
-        <h3 class="text-xl font-semibold text-green-800 mb-2">Ready to Complete!</h3>
-        <p class="text-green-700">
-          Your information has been verified and is ready to be saved. 
-          Click the button below to complete your registration.
+        <h3 class="text-xl font-semibold text-green-800 mb-2">Registration Successful!</h3>
+        <p class="text-green-700 mb-4">
+          Your account has been created successfully. You can now log in to the system.
+        </p>
+        <p class="text-green-600 text-sm">
+          A confirmation email has been sent to {{ registrationData.user.email }}
         </p>
       </div>
     </mat-card>
 
-    <!-- Final Review -->
+    <!-- Registration Details -->
     <mat-card class="p-4 border border-gray-200">
       <div class="flex items-center gap-3 mb-4">
-        <mat-icon class="text-blue-600 !w-6 !h-6">fact_check</mat-icon>
-        <h3 class="text-lg font-semibold text-gray-900">Final Review</h3>
+        <mat-icon class="text-blue-600 !w-6 !h-6">summary</mat-icon>
+        <h3 class="text-lg font-semibold text-gray-900">Registration Summary</h3>
       </div>
       
-      <div class="space-y-3 text-sm text-gray-600">
-        <p class="flex items-center gap-2">
-          <mat-icon class="!w-4 !h-4 text-green-600">check_circle</mat-icon>
-          Company information verified
-        </p>
-        <p class="flex items-center gap-2">
-          <mat-icon class="!w-4 !h-4 text-green-600">check_circle</mat-icon>
-          User information validated
-        </p>
-        <p class="flex items-center gap-2">
-          <mat-icon class="!w-4 !h-4 text-green-600">check_circle</mat-icon>
-          Terms and policies accepted
-        </p>
-        <p class="flex items-center gap-2">
-          <mat-icon class="!w-4 !h-4 text-green-600">check_circle</mat-icon>
-          Ready for database persistence
-        </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <p class="text-gray-600">Company</p>
+          <p class="font-medium text-gray-900">{{ registrationData.company.name }}</p>
+        </div>
+        <div>
+          <p class="text-gray-600">User</p>
+          <p class="font-medium text-gray-900">{{ registrationData.user.firstName }} {{ registrationData.user.lastName }}</p>
+        </div>
+        <div>
+          <p class="text-gray-600">Username</p>
+          <p class="font-medium text-gray-900">{{ registrationData.user.userName }}</p>
+        </div>
+        <div>
+          <p class="text-gray-600">Email</p>
+          <p class="font-medium text-gray-900">{{ registrationData.user.email }}</p>
+        </div>
       </div>
     </mat-card>
 
@@ -59,26 +61,23 @@
         </div>
       </button>
       
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="button"
-        (click)="onComplete()"
-        [disabled]="isLoading"
-        class="px-8 py-3 bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
+      <div class="flex gap-4">
+        <button 
+          mat-stroked-button 
+          type="button"
+          (click)="onComplete()"
+          [disabled]="isLoading"
+          class="px-6 py-3 text-green-600 from-green-400 hover:bg-green-50 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium">
+          
+          <div class="flex items-center gap-2 justify-center">
+            <mat-icon class="!w-5 !h-5">person_add</mat-icon>
+            <span class="font-semibold">
+              {{ isLoading ? 'Processing...' : 'Complete Registration' }}
+            </span>
+          </div>
+        </button>
         
-        <div class="flex items-center gap-2 justify-center">
-          <mat-spinner 
-            *ngIf="isLoading" 
-            diameter="20" 
-            class="button-spinner">
-          </mat-spinner>
-          <mat-icon *ngIf="!isLoading" class="text-white !w-5 !h-5">check_circle</mat-icon>
-          <span class="font-semibold">
-            {{ isLoading ? 'Registering...' : 'Complete Registration' }}
-          </span>
-        </div>
-      </button>
+      </div>
     </div>
 
   </div>
