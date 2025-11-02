@@ -99,7 +99,6 @@ This approach ensures:
 
 We leverage modern Angular features including:
 - Standalone components and APIs
-- OnPush change detection for optimal performance
 - Reactive programming with RxJS
 - Type-safe development practices
 
