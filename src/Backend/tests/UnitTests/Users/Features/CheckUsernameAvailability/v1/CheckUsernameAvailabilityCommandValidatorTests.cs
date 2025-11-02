@@ -118,7 +118,7 @@ public class CheckUsernameAvailabilityCommandValidatorTests
 
         // Assert
         result.IsValid.ShouldBeFalse();
-        result.Errors.ShouldContain(error => 
+        result.Errors.ShouldContain(error =>
             error.ErrorMessage == "Username can only contain letters, numbers, underscores and periods");
     }
 
@@ -271,7 +271,7 @@ public class CheckUsernameAvailabilityCommandValidatorTests
         result.IsValid.ShouldBeFalse();
         result.Errors.Count.ShouldBe(2);
         result.Errors.ShouldContain(error => error.ErrorMessage == "Username must be at least 3 characters");
-        result.Errors.ShouldContain(error => 
+        result.Errors.ShouldContain(error =>
             error.ErrorMessage == "Username can only contain letters, numbers, underscores and periods");
     }
 

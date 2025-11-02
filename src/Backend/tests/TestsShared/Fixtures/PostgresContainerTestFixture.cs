@@ -56,7 +56,7 @@ public class PostgresContainerFixture : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await PostgresContainer.StopAsync();
-        await PostgresContainer.DisposeAsync(); 
+        await PostgresContainer.DisposeAsync();
     }
 }
 

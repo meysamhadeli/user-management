@@ -26,9 +26,9 @@ public static class UserMappings
             CreatedAt = DateTime.UtcNow,
         };
     }
-    
-    
-    public static CompleteUserRegistrationCommand ToCommand(this  CompleteUserRegistrationRequestDto request)
+
+
+    public static CompleteUserRegistrationCommand ToCommand(this CompleteUserRegistrationRequestDto request)
     {
         ArgumentNullException.ThrowIfNull(request);
 

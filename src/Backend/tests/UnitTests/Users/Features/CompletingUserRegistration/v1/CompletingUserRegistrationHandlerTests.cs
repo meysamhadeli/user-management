@@ -22,19 +22,19 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
             .Options;
 
         _dbContext = new UserManagementDbContext(options);
-        
+
         // Seed test data
         SeedTestData();
-        
+
         _handler = new CompleteUserRegistrationHandler(_dbContext);
     }
 
     private void SeedTestData()
     {
         // Add a test company
-        var company = new Company 
-        { 
-            Id = Guid.NewGuid(), 
+        var company = new Company
+        {
+            Id = Guid.NewGuid(),
             Name = "Test Company",
             IndustryId = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow,
@@ -43,12 +43,12 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
         _dbContext.Companies.Add(company);
 
         // Add a test user for duplicate testing
-        var existingUser = new User 
-        { 
+        var existingUser = new User
+        {
             Id = Guid.NewGuid(),
             FirstName = "Existing",
             LastName = "User",
-            UserName = "existinguser", 
+            UserName = "existinguser",
             Email = "existing@example.com",
             PasswordHash = "hashed_password",
             CompanyId = company.Id,
@@ -93,12 +93,12 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
         createdUser.UserName.ShouldBe(command.UserName);
         createdUser.Email.ShouldBe(command.Email);
         createdUser.CompanyId.ShouldBe(command.CompanyId);
-        
+
         // Verify entity properties are set
         createdUser.Id.ShouldNotBe(Guid.Empty);
         createdUser.CreatedAt.ShouldNotBeNull();
         createdUser.IsDeleted.ShouldBeFalse();
-        
+
         // Verify password was hashed
         createdUser.PasswordHash.ShouldNotBe(command.Password);
         PasswordHasher.VerifyPassword(command.Password, createdUser.PasswordHash).ShouldBeTrue();
@@ -135,7 +135,7 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
         // Arrange
         var company = await _dbContext.Companies.FirstAsync();
         var existingUser = await _dbContext.Users.FirstAsync(u => u.UserName == "existinguser");
-        
+
         var command = new CompleteUserRegistrationCommand(
             CompanyId: company.Id,
             FirstName: "John",
@@ -162,7 +162,7 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
         // Arrange
         var company = await _dbContext.Companies.FirstAsync();
         var existingUser = await _dbContext.Users.FirstAsync(u => u.Email == "existing@example.com");
-        
+
         var command = new CompleteUserRegistrationCommand(
             CompanyId: company.Id,
             FirstName: "John",
@@ -293,9 +293,9 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
     public async Task Handle_WithDeletedCompany_ThrowsCompanyNotFoundException()
     {
         // Arrange
-        var deletedCompany = new Company 
-        { 
-            Id = Guid.NewGuid(), 
+        var deletedCompany = new Company
+        {
+            Id = Guid.NewGuid(),
             Name = "Deleted Company",
             IndustryId = Guid.NewGuid(),
             IsDeleted = true, // Marked as deleted
@@ -328,14 +328,14 @@ public class CompleteUserRegistrationHandlerTests : IDisposable
     {
         // Arrange
         var company = await _dbContext.Companies.FirstAsync();
-        
+
         // Add a deleted user with the same username we want to use
-        var deletedUser = new User 
-        { 
+        var deletedUser = new User
+        {
             Id = Guid.NewGuid(),
             FirstName = "Deleted",
             LastName = "User",
-            UserName = "deleteduser", 
+            UserName = "deleteduser",
             Email = "deleted@example.com",
             PasswordHash = "hashed_password",
             CompanyId = company.Id,

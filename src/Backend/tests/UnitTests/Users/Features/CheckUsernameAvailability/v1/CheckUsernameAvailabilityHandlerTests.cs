@@ -19,10 +19,10 @@ public class CheckUsernameAvailabilityHandlerTests : IDisposable
             .Options;
 
         _dbContext = new UserManagementDbContext(options);
-        
+
         // Seed test data
         SeedTestData();
-        
+
         _handler = new CheckUsernameAvailabilityHandler(_dbContext);
     }
 
@@ -30,27 +30,27 @@ public class CheckUsernameAvailabilityHandlerTests : IDisposable
     {
         // Add test users with various username scenarios
         var companyId = Guid.NewGuid();
-        
+
         var users = new[]
         {
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Existing",
                 LastName = "User",
-                UserName = "existinguser", 
+                UserName = "existinguser",
                 Email = "existing@example.com",
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Deleted",
                 LastName = "User",
-                UserName = "deleteduser", 
+                UserName = "deleteduser",
                 Email = "deleted@example.com",
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
@@ -58,8 +58,8 @@ public class CheckUsernameAvailabilityHandlerTests : IDisposable
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Case",
                 LastName = "Sensitive",
@@ -70,8 +70,8 @@ public class CheckUsernameAvailabilityHandlerTests : IDisposable
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Special",
                 LastName = "Chars",
@@ -194,10 +194,10 @@ public class CheckUsernameAvailabilityHandlerTests : IDisposable
         var options = new DbContextOptionsBuilder<UserManagementDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        
+
         var emptyDbContext = new UserManagementDbContext(options);
         var emptyHandler = new CheckUsernameAvailabilityHandler(emptyDbContext);
-        
+
         var command = new CheckUsernameAvailabilityCommand("anyusername");
 
         // Act

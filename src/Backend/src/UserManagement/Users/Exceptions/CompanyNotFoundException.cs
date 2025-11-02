@@ -5,7 +5,7 @@ namespace UserManagement.Users.Exceptions;
 
 public class CompanyNotFoundException : AppException
 {
-    public CompanyNotFoundException(Guid companyId) 
+    public CompanyNotFoundException(Guid companyId)
         : base($"Company with ID '{companyId}' does not exist", HttpStatusCode.NotFound)
     {
     }

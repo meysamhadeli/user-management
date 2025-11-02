@@ -55,7 +55,8 @@ public abstract class IntegrationTestBase<TEntryPoint, TContext> : IAsyncLifetim
         WebHostBuilderContext webHostBuilderContext,
         IConfiguration configuration,
         IWebHostEnvironment hostingEnvironment
-    ) { }
+    )
+    { }
 
     protected virtual void SetupTestConfiguration(IConfiguration configurations) { }
 

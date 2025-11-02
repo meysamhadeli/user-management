@@ -15,10 +15,10 @@ public static class CompanyMappings
                            null;
 
         return new CompanyDto(company.Id, company.Name, industry)
-               {
-                   Id = company.Id,
-                   Name = company.Name,
-               };
+        {
+            Id = company.Id,
+            Name = company.Name,
+        };
     }
 
     public static Company ToModel(this CreateCompanyCommand command, Guid id)

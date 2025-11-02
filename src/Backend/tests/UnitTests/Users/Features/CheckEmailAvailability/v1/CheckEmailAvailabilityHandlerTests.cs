@@ -19,10 +19,10 @@ public class CheckEmailAvailabilityHandlerTests : IDisposable
             .Options;
 
         _dbContext = new UserManagementDbContext(options);
-        
+
         // Seed test data
         SeedTestData();
-        
+
         _handler = new CheckEmailAvailabilityHandler(_dbContext);
     }
 
@@ -30,27 +30,27 @@ public class CheckEmailAvailabilityHandlerTests : IDisposable
     {
         // Add test users with various email scenarios
         var companyId = Guid.NewGuid();
-        
+
         var users = new[]
         {
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Existing",
                 LastName = "User",
-                UserName = "existinguser", 
+                UserName = "existinguser",
                 Email = "existing@example.com",
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Deleted",
                 LastName = "User",
-                UserName = "deleteduser", 
+                UserName = "deleteduser",
                 Email = "deleted@example.com",
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
@@ -58,36 +58,36 @@ public class CheckEmailAvailabilityHandlerTests : IDisposable
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Case",
                 LastName = "Sensitive",
-                UserName = "casesensitive", 
+                UserName = "casesensitive",
                 Email = "CaseSensitive@Example.COM", // Mixed case email
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "No",
                 LastName = "Email",
-                UserName = "noemail", 
+                UserName = "noemail",
                 Email = null, // User with null email
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
                 CreatedAt = DateTime.UtcNow,
                 Version = 1
             },
-            new User 
-            { 
+            new User
+            {
                 Id = Guid.NewGuid(),
                 FirstName = "Empty",
                 LastName = "Email",
-                UserName = "emptyemail", 
+                UserName = "emptyemail",
                 Email = "", // User with empty email
                 PasswordHash = "hashed_password",
                 CompanyId = companyId,
@@ -236,10 +236,10 @@ public class CheckEmailAvailabilityHandlerTests : IDisposable
         var options = new DbContextOptionsBuilder<UserManagementDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        
+
         var emptyDbContext = new UserManagementDbContext(options);
         var emptyHandler = new CheckEmailAvailabilityHandler(emptyDbContext);
-        
+
         var command = new CheckEmailAvailabilityCommand("any@example.com");
 
         // Act

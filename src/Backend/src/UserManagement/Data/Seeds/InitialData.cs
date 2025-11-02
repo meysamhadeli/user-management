@@ -18,7 +18,7 @@ public static class InitialData
             new Industry{Id = Guid.Parse("a1b2c3d4-1234-5678-9abc-123456789004"), Name = "Manufacturing", Description = "Industrial manufacturing", CreatedAt = DateTime.Now},
             new Industry{Id = Guid.Parse("a1b2c3d4-1234-5678-9abc-123456789005"), Name = "Retail", Description = "Retail and e-commerce", CreatedAt = DateTime.Now},
         };
-        
+
         Companies = new()
         {
             new Company { Id = Guid.Parse("b1b2c3d4-1234-5678-9abc-123456789101"), Name = "Microsoft", IndustryId = Guid.Parse("a1b2c3d4-1234-5678-9abc-123456789001"), CreatedAt = DateTime.UtcNow },
