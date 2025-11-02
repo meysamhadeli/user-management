@@ -1,13 +1,15 @@
-// modules/user/features/summary-step/summary-step.component.ts
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon'; // Add this import
+import { MatCardModule } from '@angular/material/card';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
 import { IndustryDto } from '../../../industry/dtos/industry.dto';
+import { IndustryService } from '../../../industry/services/industry.service ';
 
 @Component({
   selector: 'app-summary-step',
@@ -15,45 +17,61 @@ import { IndustryDto } from '../../../industry/dtos/industry.dto';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
+    MatIconModule,
     MatCheckboxModule,
-    MatIconModule
+    MatCardModule
   ],
   templateUrl: './summary-step.component.html'
 })
-export class SummaryStepComponent {
-  @Input() industries: IndustryDto[] = [];
+export class SummaryStepComponent implements OnInit {
+  @Input() termsForm!: FormGroup;
+  @Output() next = new EventEmitter<void>();
   @Output() previous = new EventEmitter<void>();
-  @Output() complete = new EventEmitter<void>();
 
-  private fb = inject(FormBuilder);
   private wizardService = inject(RegistrationWizardService);
+  private industryService = inject(IndustryService);
 
-  termsForm: FormGroup;
-  data = this.wizardService.getCurrentData();
+  registrationData: any;
+  industries: IndustryDto[] = [];
+  selectedIndustryName: string = '';
 
-  constructor() {
-    this.termsForm = this.fb.group({
-      acceptTermsOfService: [false, Validators.requiredTrue],
-      acceptPrivacyPolicy: [false, Validators.requiredTrue]
+  constructor() {}
+
+  ngOnInit(): void {
+    this.registrationData = this.wizardService.getCurrentData();
+    this.loadIndustries();
+  }
+
+  loadIndustries(): void {
+    this.industryService.getIndustries().subscribe({
+      next: (response) => {
+        this.industries = response.items || [];
+        this.findSelectedIndustryName();
+      },
+      error: (error) => {
+        console.error('Failed to load industries:', error);
+      }
     });
   }
 
-  getIndustryName(industryId: string): string {
-    const industry = this.industries.find(i => i.id === industryId);
-    return industry ? industry.name : 'Unknown';
-  }
-
-  onPrevious(): void {
-    this.wizardService.updateTermsData(this.termsForm.value);
-    this.previous.emit();
+  findSelectedIndustryName(): void {
+    const selectedIndustry = this.industries.find(industry => 
+      industry.id === this.registrationData.company.industryId
+    );
+    this.selectedIndustryName = selectedIndustry ? selectedIndustry.name : 'Unknown Industry';
   }
 
   onSubmit(): void {
     if (this.termsForm.valid) {
       this.wizardService.updateTermsData(this.termsForm.value);
-      this.complete.emit();
+      this.next.emit();
     }
+  }
+
+  onPrevious(): void {
+    this.previous.emit();
   }
 }

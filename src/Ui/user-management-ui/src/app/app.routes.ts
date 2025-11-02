@@ -19,7 +19,7 @@ export const routes: Routes = [
   // User Routes
   { 
     path: 'user/register', 
-    loadComponent: () => import('./modules/user/features/complete-user-registration/complete-user-registration.component').then(m => m.CompleteUserRegistrationComponent) 
+    loadComponent: () => import('./modules/user/features/registration-wizard/registration-wizard.component').then(m => m.RegistrationWizardComponent) 
   },
   
   { path: '**', redirectTo: '/user/register' }

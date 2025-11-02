@@ -18,7 +18,7 @@ public class GetIndustriesEndpoint : IMinimalEndpoint
     {
         builder
             .MapGet(
-                $"{EndpointConfig.BaseApiPath}/industries",
+                $"{EndpointConfig.BaseApiPath}/industry",
                 async (
                     [AsParameters] GetIndustriesRequestDto request,
                     IMediator mediator,

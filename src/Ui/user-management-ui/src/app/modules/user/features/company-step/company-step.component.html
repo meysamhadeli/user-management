@@ -1,71 +1,71 @@
-<div class="space-y-2">
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label class="text-gray-700 font-medium">{{ label }}</mat-label>
+<div class="p-6">
+  <div class="text-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Company Information</h2>
+    <p class="text-gray-600">Step 1 of 4 - Tell us about your company</p>
+  </div>
+
+  <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="space-y-6">
     
-    <input
-      type="text"
-      matInput
-      [formControl]="companyControl"
-      [matAutocomplete]="auto"
-      [placeholder]="placeholder"
-      class="placeholder-gray-400 text-gray-900">
-    
-    <mat-icon matSuffix class="text-gray-400">business</mat-icon>
-
-    <!-- Clear button when there's a selection -->
-    <button 
-      *ngIf="companyControl.value" 
-      matSuffix 
-      mat-icon-button 
-      (click)="clearSelection()"
-      type="button"
-      class="!mr-2">
-      <mat-icon class="text-gray-400 hover:text-gray-600">close</mat-icon>
-    </button>
-
-    <!-- Loading spinner -->
-    <mat-progress-spinner 
-      *ngIf="isLoading"
-      matSuffix
-      diameter="20"
-      mode="indeterminate"
-      class="!mr-2">
-    </mat-progress-spinner>
-
-    <!-- Error message -->
-    <mat-error *ngIf="searchError" class="text-red-600 text-sm font-medium">
-      {{ searchError }}
-    </mat-error>
-
-    <mat-error *ngIf="companyControl.hasError('required') && companyControl.touched" 
-              class="text-red-600 text-sm font-medium">
-      ✗ Company selection is required
-    </mat-error>
-  </mat-form-field>
-
-<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCompany" (optionSelected)="onCompanySelected($event.option.value)">
-  <mat-option 
-    *ngFor="let company of filteredCompanies$ | async" 
-    [value]="company"
-    class="text-gray-900">
-    
-    <div class="flex flex-col py-2">
-      <span class="font-medium text-gray-900">{{ company.name }}</span>
-      <!-- Fixed: Changed industryName to industry -->
-      <span class="text-sm text-gray-500" *ngIf="company.industry">
-        Industry: {{ company.industry }}
-      </span>
-      <span class="text-sm text-gray-500" *ngIf="company.userCount !== undefined">
-        Users: {{ company.userCount }}
-      </span>
+    <!-- Company Name -->
+    <div class="space-y-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label class="text-gray-700 font-medium">Company Name</mat-label>
+        <input 
+          matInput 
+          formControlName="name" 
+          placeholder="Enter your company name"
+          class="placeholder-gray-400 text-gray-900">
+        <mat-icon matSuffix class="text-gray-400">business</mat-icon>
+        
+        <mat-error *ngIf="companyForm.get('name')?.hasError('required')" 
+                  class="text-red-600 text-sm font-medium">
+          ✗ Company name is required
+        </mat-error>
+        <mat-error *ngIf="companyForm.get('name')?.hasError('maxlength')" 
+                  class="text-red-600 text-sm font-medium">
+          ✗ Company name must not exceed 200 characters
+        </mat-error>
+      </mat-form-field>
     </div>
-  </mat-option>
 
-  <!-- No results message -->
-  <mat-option *ngIf="(filteredCompanies$ | async)?.length === 0 && !isLoading && companyControl.value" disabled>
-    <div class="text-gray-500 text-center py-2">
-      No companies found matching "{{ companyControl.value }}"
+    <!-- Industry Selection -->
+    <div class="space-y-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label class="text-gray-700 font-medium">Industry</mat-label>
+        <mat-select 
+          formControlName="industryId">
+          <mat-option class="text-gray-500">-- Select an industry --</mat-option>
+          <mat-option 
+            *ngFor="let industry of industries" 
+            [value]="industry.id"
+            class="text-gray-900">
+            {{ industry.name }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix class="text-gray-400">category</mat-icon>
+        
+        <mat-error *ngIf="companyForm.get('industryId')?.hasError('required')" 
+                  class="text-red-600 text-sm font-medium">
+          ✗ Please select an industry
+        </mat-error>
+      </mat-form-field>
     </div>
-  </mat-option>
-</mat-autocomplete>
+
+    <!-- Action -->
+    <div class="flex justify-end pt-4 border-t border-gray-100">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit"
+        [disabled]="companyForm.invalid"
+        class="px-8 py-3 bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
+        
+        <div class="flex items-center gap-2 justify-center">
+          <mat-icon class="text-white !w-5 !h-5">arrow_forward</mat-icon>
+          <span class="font-semibold">Next: User Information</span>
+        </div>
+      </button>
+    </div>
+
+  </form>
 </div>

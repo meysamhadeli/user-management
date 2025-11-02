@@ -1,71 +1,101 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
-export interface RegistrationWizardData {
-  currentStep: number;
-  company: {
-    name: string;
-    industryId: string;
-  };
-  user: {
-    firstName: string;
-    lastName: string;
-    userName: string;
-    password: string;
-    passwordRepetition: string;
-    email?: string;
-  };
-  terms: {
-    acceptTermsOfService: boolean;
-    acceptPrivacyPolicy: boolean;
-  };
+export interface CompanyData {
+  name: string;
+  industryId: string;
+}
+
+export interface UserData {
+  firstName: string;
+  lastName: string;
+  userName: string;
+  password: string;
+  passwordRepetition: string;
+  email?: string;
+}
+
+export interface TermsData {
+  acceptTermsOfService: boolean;
+  acceptPrivacyPolicy: boolean;
+}
+
+export interface RegistrationData {
+  company: CompanyData;
+  user: UserData;
+  terms: TermsData;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationWizardService {
-  private data: RegistrationWizardData = {
-    currentStep: 1,
-    company: { name: '', industryId: '' },
-    user: { firstName: '', lastName: '', userName: '', password: '', passwordRepetition: '', email: '' },
-    terms: { acceptTermsOfService: false, acceptPrivacyPolicy: false }
+  private currentStep = 1;
+  private registrationData: RegistrationData = {
+    company: {
+      name: '',
+      industryId: ''
+    },
+    user: {
+      firstName: '',
+      lastName: '',
+      userName: '',
+      password: '',
+      passwordRepetition: '',
+      email: ''
+    },
+    terms: {
+      acceptTermsOfService: false,
+      acceptPrivacyPolicy: false
+    }
   };
 
-  private dataSubject = new BehaviorSubject<RegistrationWizardData>(this.data);
-  public data$ = this.dataSubject.asObservable();
-
-  updateCompanyData(companyData: Partial<RegistrationWizardData['company']>): void {
-    this.data.company = { ...this.data.company, ...companyData };
-    this.dataSubject.next(this.data);
-  }
-
-  updateUserData(userData: Partial<RegistrationWizardData['user']>): void {
-    this.data.user = { ...this.data.user, ...userData };
-    this.dataSubject.next(this.data);
-  }
-
-  updateTermsData(termsData: Partial<RegistrationWizardData['terms']>): void {
-    this.data.terms = { ...this.data.terms, ...termsData };
-    this.dataSubject.next(this.data);
+  getCurrentStep(): number {
+    return this.currentStep;
   }
 
   setCurrentStep(step: number): void {
-    this.data.currentStep = step;
-    this.dataSubject.next(this.data);
+    this.currentStep = step;
   }
 
-  getCurrentData(): RegistrationWizardData {
-    return { ...this.data };
+  getCurrentData(): RegistrationData {
+    return this.registrationData;
   }
 
-  reset(): void {
-    this.data = {
-      currentStep: 1,
-      company: { name: '', industryId: '' },
-      user: { firstName: '', lastName: '', userName: '', password: '', passwordRepetition: '', email: '' },
-      terms: { acceptTermsOfService: false, acceptPrivacyPolicy: false }
+  updateCompanyData(companyData: CompanyData): void {
+    this.registrationData.company = { ...this.registrationData.company, ...companyData };
+  }
+
+  updateUserData(userData: UserData): void {
+    this.registrationData.user = { ...this.registrationData.user, ...userData };
+  }
+
+  updateTermsData(termsData: TermsData): void {
+    this.registrationData.terms = { ...this.registrationData.terms, ...termsData };
+  }
+
+  getRegistrationData(): RegistrationData {
+    return this.registrationData;
+  }
+
+  resetWizard(): void {
+    this.currentStep = 1;
+    this.registrationData = {
+      company: {
+        name: '',
+        industryId: ''
+      },
+      user: {
+        firstName: '',
+        lastName: '',
+        userName: '',
+        password: '',
+        passwordRepetition: '',
+        email: ''
+      },
+      terms: {
+        acceptTermsOfService: false,
+        acceptPrivacyPolicy: false
+      }
     };
-    this.dataSubject.next(this.data);
   }
 }

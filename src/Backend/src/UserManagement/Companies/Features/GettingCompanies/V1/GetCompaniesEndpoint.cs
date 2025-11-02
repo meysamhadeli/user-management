@@ -18,7 +18,7 @@ public class GetCompaniesEndpoint : IMinimalEndpoint
     {
         builder
             .MapGet(
-                $"{EndpointConfig.BaseApiPath}/companies",
+                $"{EndpointConfig.BaseApiPath}/company",
                 async (
                     [AsParameters] GetCompaniesRequestDto request,
                     IMediator mediator,

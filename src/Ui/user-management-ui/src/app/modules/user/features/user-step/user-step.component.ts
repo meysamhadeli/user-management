@@ -1,13 +1,17 @@
-import { Component, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
 import { UserService } from '../../services/user.service';
+import { CheckUsernameAvailabilityRequestDto } from '../../dtos/check-username-availability-request.dto';
+import { CheckEmailAvailabilityRequestDto } from '../../dtos/check-email-availability-request.dto';
 
 @Component({
   selector: 'app-user-step',
@@ -19,48 +23,96 @@ import { UserService } from '../../services/user.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatCheckboxModule
+    MatProgressSpinnerModule
   ],
   templateUrl: './user-step.component.html'
 })
-export class UserStepComponent {
-  @Output() previous = new EventEmitter<void>();
+export class UserStepComponent implements OnInit {
+  @Input() userForm!: FormGroup;
   @Output() next = new EventEmitter<void>();
+  @Output() previous = new EventEmitter<void>();
 
-  private fb = inject(FormBuilder);
   private wizardService = inject(RegistrationWizardService);
   private userService = inject(UserService);
 
-  userForm: FormGroup;
+  checkingUsername = false;
+  checkingEmail = false;
   hidePassword = true;
-  hidePasswordRepetition = true;
+  hideConfirmPassword = true;
 
-  constructor() {
-    this.userForm = this.createForm();
-    const data = this.wizardService.getCurrentData();
-    this.userForm.patchValue(data.user);
+  constructor() {}
+
+  ngOnInit(): void {
+    this.setupUsernameAvailabilityCheck();
+    this.setupEmailAvailabilityCheck();
   }
 
-  private createForm(): FormGroup {
-    return this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(100)]],
-      lastName: ['', [Validators.required, Validators.maxLength(100)]],
-      userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      email: [''],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      passwordRepetition: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+  private setupUsernameAvailabilityCheck(): void {
+    this.userForm.get('userName')?.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap(username => {
+        if (this.userNameControl?.valid && username) {
+          this.checkingUsername = true;
+          const request: CheckUsernameAvailabilityRequestDto = { username };
+          return this.userService.checkUsernameAvailability(request).pipe(
+            catchError(() => {
+              this.checkingUsername = false;
+              return of(null);
+            })
+          );
+        }
+        this.checkingUsername = false;
+        return of(null);
+      })
+    ).subscribe(response => {
+      this.checkingUsername = false;
+      if (response && !response.isAvailable) {
+        this.userNameControl?.setErrors({ usernameTaken: true });
+      }
+    });
   }
 
-  private passwordMatchValidator(control: AbstractControl) {
-    const password = control.get('password')?.value;
-    const passwordRepetition = control.get('passwordRepetition')?.value;
-    return password && passwordRepetition && password === passwordRepetition ? null : { passwordMismatch: true };
+  private setupEmailAvailabilityCheck(): void {
+    this.userForm.get('email')?.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap(email => {
+        if (this.emailControl?.valid && email) {
+          this.checkingEmail = true;
+          const request: CheckEmailAvailabilityRequestDto = { email };
+          return this.userService.checkEmailAvailability(request).pipe(
+            catchError(() => {
+              this.checkingEmail = false;
+              return of(null);
+            })
+          );
+        }
+        this.checkingEmail = false;
+        return of(null);
+      })
+    ).subscribe(response => {
+      this.checkingEmail = false;
+      if (response && !response.isAvailable) {
+        this.emailControl?.setErrors({ emailTaken: true });
+      }
+    });
   }
 
-  onPrevious(): void {
-    this.wizardService.updateUserData(this.userForm.value);
-    this.previous.emit();
+  get userNameControl(): AbstractControl | null {
+    return this.userForm.get('userName');
+  }
+
+  get emailControl(): AbstractControl | null {
+    return this.userForm.get('email');
+  }
+
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.hideConfirmPassword = !this.hideConfirmPassword;
   }
 
   onSubmit(): void {
@@ -68,5 +120,9 @@ export class UserStepComponent {
       this.wizardService.updateUserData(this.userForm.value);
       this.next.emit();
     }
+  }
+
+  onPrevious(): void {
+    this.previous.emit();
   }
 }

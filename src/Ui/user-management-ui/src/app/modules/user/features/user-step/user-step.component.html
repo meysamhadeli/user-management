@@ -1,19 +1,20 @@
 <div class="p-6">
   <div class="text-center mb-6">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">User Information</h2>
-    <p class="text-gray-600">Step 2 of 4 - Create your user account</p>
+    <p class="text-gray-600">Step 2 of 4 - Tell us about yourself</p>
   </div>
 
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
     
-    <!-- Name Fields -->
+    <!-- Personal Information -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- First Name -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label class="text-gray-700 font-medium">First Name</mat-label>
         <input 
           matInput 
           formControlName="firstName" 
-          placeholder="Enter first name"
+          placeholder="Enter your first name"
           class="placeholder-gray-400 text-gray-900">
         <mat-icon matSuffix class="text-gray-400">person</mat-icon>
         
@@ -21,14 +22,19 @@
                   class="text-red-600 text-sm font-medium">
           ✗ First name is required
         </mat-error>
+        <mat-error *ngIf="userForm.get('firstName')?.hasError('maxlength')" 
+                  class="text-red-600 text-sm font-medium">
+          ✗ First name must not exceed 50 characters
+        </mat-error>
       </mat-form-field>
 
+      <!-- Last Name -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label class="text-gray-700 font-medium">Last Name</mat-label>
         <input 
           matInput 
           formControlName="lastName" 
-          placeholder="Enter last name"
+          placeholder="Enter your last name"
           class="placeholder-gray-400 text-gray-900">
         <mat-icon matSuffix class="text-gray-400">person</mat-icon>
         
@@ -36,61 +42,98 @@
                   class="text-red-600 text-sm font-medium">
           ✗ Last name is required
         </mat-error>
+        <mat-error *ngIf="userForm.get('lastName')?.hasError('maxlength')" 
+                  class="text-red-600 text-sm font-medium">
+          ✗ Last name must not exceed 50 characters
+        </mat-error>
       </mat-form-field>
     </div>
 
     <!-- Username -->
-    <div class="space-y-2">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label class="text-gray-700 font-medium">Username</mat-label>
-        <input 
-          matInput 
-          formControlName="userName" 
-          placeholder="Choose a username"
-          class="placeholder-gray-400 text-gray-900">
-        <mat-icon matSuffix class="text-gray-400">alternate_email</mat-icon>
-        
-        <mat-error *ngIf="userForm.get('userName')?.hasError('required')" 
-                  class="text-red-600 text-sm font-medium">
-          ✗ Username is required
-        </mat-error>
-        <mat-error *ngIf="userForm.get('userName')?.hasError('minlength')" 
-                  class="text-red-600 text-sm font-medium">
-          ✗ Username must be at least 3 characters
-        </mat-error>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-700 font-medium">Username</mat-label>
+      <input 
+        matInput 
+        formControlName="userName" 
+        placeholder="Choose a username"
+        class="placeholder-gray-400 text-gray-900">
+      <mat-icon matSuffix class="text-gray-400">alternate_email</mat-icon>
+
+      <!-- Loading indicator for username check -->
+      <mat-progress-spinner 
+        *ngIf="checkingUsername"
+        matSuffix
+        diameter="20"
+        mode="indeterminate"
+        class="!mr-2">
+      </mat-progress-spinner>
+
+      <mat-error *ngIf="userForm.get('userName')?.hasError('required')" 
+                class="text-red-600 text-sm font-medium">
+        ✗ Username is required
+      </mat-error>
+      <mat-error *ngIf="userForm.get('userName')?.hasError('minlength')" 
+                class="text-red-600 text-sm font-medium">
+        ✗ Username must be at least 3 characters
+      </mat-error>
+      <mat-error *ngIf="userForm.get('userName')?.hasError('maxlength')" 
+                class="text-red-600 text-sm font-medium">
+        ✗ Username must not exceed 50 characters
+      </mat-error>
+      <mat-error *ngIf="userForm.get('userName')?.hasError('usernameTaken')" 
+                class="text-red-600 text-sm font-medium">
+        ✗ This username is already taken
+      </mat-error>
+    </mat-form-field>
 
     <!-- Email -->
-    <div class="space-y-2">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label class="text-gray-700 font-medium">Email (Optional)</mat-label>
-        <input 
-          matInput 
-          formControlName="email" 
-          type="email"
-          placeholder="Enter email address"
-          class="placeholder-gray-400 text-gray-900">
-        <mat-icon matSuffix class="text-gray-400">email</mat-icon>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-700 font-medium">Email (Optional)</mat-label>
+      <input 
+        matInput 
+        formControlName="email" 
+        placeholder="Enter your email" 
+        type="email"
+        class="placeholder-gray-400 text-gray-900">
+      <mat-icon matSuffix class="text-gray-400">email</mat-icon>
 
-    <!-- Password Fields -->
+      <!-- Loading indicator for email check -->
+      <mat-progress-spinner 
+        *ngIf="checkingEmail"
+        matSuffix
+        diameter="20"
+        mode="indeterminate"
+        class="!mr-2">
+      </mat-progress-spinner>
+
+      <mat-error *ngIf="userForm.get('email')?.hasError('email')" 
+                class="text-red-600 text-sm font-medium">
+        ✗ Please enter a valid email address
+      </mat-error>
+      <mat-error *ngIf="userForm.get('email')?.hasError('emailTaken')" 
+                class="text-red-600 text-sm font-medium">
+        ✗ This email is already taken
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Password -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Password -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label class="text-gray-700 font-medium">Password</mat-label>
         <input 
           matInput 
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password" 
-          placeholder="Enter password"
+          placeholder="Enter your password"
           class="placeholder-gray-400 text-gray-900">
         <button 
           mat-icon-button 
           matSuffix 
-          (click)="hidePassword = !hidePassword"
+          (click)="togglePasswordVisibility()"
           type="button"
-          class="text-gray-400 hover:text-gray-600">
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePassword">
           <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
         
@@ -104,43 +147,76 @@
         </mat-error>
       </mat-form-field>
 
+      <!-- Confirm Password -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label class="text-gray-700 font-medium">Repeat Password</mat-label>
+        <mat-label class="text-gray-700 font-medium">Confirm Password</mat-label>
         <input 
           matInput 
-          [type]="hidePasswordRepetition ? 'password' : 'text'"
+          [type]="hideConfirmPassword ? 'password' : 'text'"
           formControlName="passwordRepetition" 
-          placeholder="Repeat password"
+          placeholder="Confirm your password"
           class="placeholder-gray-400 text-gray-900">
         <button 
           mat-icon-button 
           matSuffix 
-          (click)="hidePasswordRepetition = !hidePasswordRepetition"
+          (click)="toggleConfirmPasswordVisibility()"
           type="button"
-          class="text-gray-400 hover:text-gray-600">
-          <mat-icon>{{ hidePasswordRepetition ? 'visibility_off' : 'visibility' }}</mat-icon>
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hideConfirmPassword">
+          <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
         
         <mat-error *ngIf="userForm.get('passwordRepetition')?.hasError('required')" 
                   class="text-red-600 text-sm font-medium">
-          ✗ Please repeat your password
+          ✗ Please confirm your password
         </mat-error>
-        <mat-error *ngIf="userForm.hasError('passwordMismatch')" 
+        <mat-error *ngIf="userForm.get('passwordRepetition')?.hasError('passwordMismatch')" 
                   class="text-red-600 text-sm font-medium">
           ✗ Passwords do not match
         </mat-error>
       </mat-form-field>
     </div>
 
+    <!-- Password Requirements Hint -->
+    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <p class="text-blue-800 font-medium text-sm mb-2">Password Requirements:</p>
+      <ul class="text-blue-700 text-sm space-y-1">
+        <li class="flex items-center gap-2">
+          <mat-icon class="!w-4 !h-4 text-blue-600">check_circle</mat-icon>
+          At least 6 characters long
+        </li>
+        <li class="flex items-center gap-2">
+          <mat-icon class="!w-4 !h-4 text-blue-600">check_circle</mat-icon>
+          Must match confirmation password
+        </li>
+      </ul>
+    </div>
+
+    <!-- Availability Check Info -->
+    <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+      <p class="text-green-800 font-medium text-sm mb-2">Real-time Availability Checks:</p>
+      <ul class="text-green-700 text-sm space-y-1">
+        <li class="flex items-center gap-2">
+          <mat-icon class="!w-4 !h-4 text-green-600">check_circle</mat-icon>
+          Username availability checked automatically
+        </li>
+        <li class="flex items-center gap-2">
+          <mat-icon class="!w-4 !h-4 text-green-600">check_circle</mat-icon>
+          Email availability checked automatically (if provided)
+        </li>
+      </ul>
+    </div>
+
     <!-- Actions -->
-    <div class="flex flex-col sm:flex-row gap-3 justify-between items-center pt-4 border-t border-gray-100">
+    <div class="flex justify-between pt-6 border-t border-gray-200">
       <button 
         mat-stroked-button 
-        type="button" 
+        type="button"
         (click)="onPrevious()"
-        class="w-full sm:w-auto px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 rounded-lg font-medium">
-        <div class="flex items-center gap-2">
-          <mat-icon class="text-gray-500 !w-5 !h-5">arrow_back</mat-icon>
+        class="px-6 py-3 text-gray-700 border-gray-300 hover:bg-gray-50 transition-all duration-200 rounded-lg font-medium">
+        
+        <div class="flex items-center gap-2 justify-center">
+          <mat-icon class="!w-5 !h-5">arrow_back</mat-icon>
           <span>Back to Company</span>
         </div>
       </button>
@@ -150,11 +226,11 @@
         color="primary" 
         type="submit"
         [disabled]="userForm.invalid"
-        class="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
+        class="px-8 py-3 bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
         
         <div class="flex items-center gap-2 justify-center">
+          <span class="font-semibold">Next: Summary & Terms</span>
           <mat-icon class="text-white !w-5 !h-5">arrow_forward</mat-icon>
-          <span class="font-semibold">Next: Review & Submit</span>
         </div>
       </button>
     </div>

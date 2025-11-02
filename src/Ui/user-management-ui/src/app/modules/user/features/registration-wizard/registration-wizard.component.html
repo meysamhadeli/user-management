@@ -1,0 +1,69 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">User Registration</h1>
+      <p class="text-gray-600">Complete your registration in 4 simple steps</p>
+    </div>
+
+    <!-- Stepper -->
+    <mat-stepper linear #stepper (selectionChange)="onStepChange($event)" class="bg-white shadow-lg rounded-xl border-0">
+      
+      <!-- Step 1: Company Information -->
+      <mat-step [stepControl]="companyStepForm" errorMessage="Please complete company information">
+        <ng-template matStepLabel>Company Information</ng-template>
+        
+        <app-company-step
+          [industries]="industries"
+          [companyForm]="companyStepForm"
+          (next)="onCompanyStepComplete()">
+        </app-company-step>
+      </mat-step>
+
+      <!-- Step 2: User Information -->
+      <mat-step [stepControl]="userStepForm" errorMessage="Please complete user information">
+        <ng-template matStepLabel>User Information</ng-template>
+        
+        <app-user-step
+          [userForm]="userStepForm"
+          (next)="onUserStepComplete()"
+          (previous)="stepper.previous()">
+        </app-user-step>
+      </mat-step>
+
+      <!-- Step 3: Summary & Terms -->
+      <mat-step [stepControl]="termsStepForm" errorMessage="Please accept terms and conditions">
+        <ng-template matStepLabel>Summary & Terms</ng-template>
+        
+        <app-summary-step
+          [termsForm]="termsStepForm"
+          (next)="onTermsStepComplete()"
+          (previous)="stepper.previous()">
+        </app-summary-step>
+      </mat-step>
+
+      <!-- Step 4: Completion -->
+      <mat-step>
+        <ng-template matStepLabel>Completion</ng-template>
+        
+        <app-completion-step
+          (complete)="onRegistrationComplete()"
+          (previous)="stepper.previous()">
+        </app-completion-step>
+      </mat-step>
+
+    </mat-stepper>
+
+    <!-- Cancel Button -->
+    <div class="text-center mt-6">
+      <button 
+        mat-stroked-button 
+        (click)="onCancel()"
+        class="px-6 py-3 text-gray-700 border-gray-300 hover:bg-gray-50">
+        Cancel Registration
+      </button>
+    </div>
+
+  </div>
+</div>

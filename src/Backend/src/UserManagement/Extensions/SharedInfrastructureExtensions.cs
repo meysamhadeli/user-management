@@ -36,6 +36,19 @@ public static class SharedInfrastructureExtensions
 
         builder.Services.AddProblemDetails();
 
+        builder.Services.AddCors(options =>
+                                 {
+                                     options.AddPolicy(
+                                         name: appOptions.CorsPolicyName,
+                                         policy =>
+                                         {
+                                             policy
+                                                 .AllowAnyOrigin()
+                                                 .AllowAnyHeader()
+                                                 .AllowAnyMethod();
+                                         });
+                                 });
+
         return builder;
     }
 
@@ -47,6 +60,10 @@ public static class SharedInfrastructureExtensions
 
         app.UseCustomProblemDetails();
 
+        app.UseForwardedHeaders();
+
+        app.UseCors(appOptions.CorsPolicyName);
+
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -57,8 +74,9 @@ public static class SharedInfrastructureExtensions
             app.UseAspnetOpenApi();
         }
 
-        app.UseForwardedHeaders();
         app.UseMigration<UserManagementDbContext>();
+
+        app.MapMinimalEndpoints();
 
         return app;
     }
