@@ -5,12 +5,13 @@ import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CompanyStepComponent } from '../company-step/company-step.component';
-import { UserStepComponent } from '../user-step/user-step.component';
-import { SummaryStepComponent } from '../summary-step/summary-step.component';
-import { CompletionStepComponent } from '../completion-step/completion-step.component';
-import { RegistrationWizardService } from '../../services/registration-wizard.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { CompanyStepComponent } from '@/modules/user/features/company-step/company-step.component';
+import { UserStepComponent } from '@/modules/user/features/user-step/user-step.component';
+import { SummaryStepComponent } from '@/modules/user/features/summary-step/summary-step.component';
+import { CompletionStepComponent } from '@/modules/user/features/completion-step/completion-step.component';
+import { RegistrationWizardService } from '@/modules/user/services/registration-wizard.service';
+import { NotificationService } from '@/core/services/notification.service';
+
 
 @Component({
   selector: 'app-registration-wizard',

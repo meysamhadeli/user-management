@@ -7,9 +7,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RegistrationWizardService } from '../../services/registration-wizard.service';
-import { CompanyService } from '../../../company/services/company.service';
-import { CompanyDto } from '../../../company/dtos/company.dto';
+import { RegistrationWizardService } from '@/modules/user/services/registration-wizard.service';
+import { CompanyService } from '@/modules/company/services/company.service';
+import { CompanyDto } from '@/modules/company/dtos/company.dto';
+
 
 @Component({
   selector: 'app-company-step',

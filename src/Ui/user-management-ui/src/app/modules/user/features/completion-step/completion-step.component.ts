@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
-import { UserService } from '../../services/user.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { UserService } from '@/modules/user/services/user.service';
+import { NotificationService } from '@/core/services/notification.service';
 
 @Component({
   selector: 'app-completion-step',

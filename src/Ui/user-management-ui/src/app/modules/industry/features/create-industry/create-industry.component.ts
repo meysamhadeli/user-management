@@ -7,9 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { IndustryService } from '../../services/industry.service ';
-import { NotificationService } from '../../../../core/services/notification.service';
 import { MatIconModule } from '@angular/material/icon';
+import { IndustryService } from '@/modules/industry/services/industry.service';
+import { NotificationService } from '@/core/services/notification.service';
 
 @Component({
   selector: 'app-create-industry',

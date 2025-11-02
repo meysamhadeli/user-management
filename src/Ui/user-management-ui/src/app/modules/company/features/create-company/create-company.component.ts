@@ -9,12 +9,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { IndustryDto } from '../../../industry/dtos/industry.dto';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { IPageList } from '../../../../core/models/pagination';
-import { IndustryService } from '../../../industry/services/industry.service ';
-import { CompanyService } from '../../services/company.service';
-import { CreateCompanyRequestDto } from '../../dtos/create-company-request.dto';
+import { NotificationService } from '@/core/services/notification.service';
+import { IndustryDto } from '@/modules/industry/dtos/industry.dto';
+import { IndustryService } from '@/modules/industry/services/industry.service';
+import { CompanyService } from '@/modules/company/services/company.service';
+import { IPageList } from '@/core/models/pagination';
+import { CreateCompanyRequestDto } from '@/modules/company/dtos/create-company-request.dto';
 
 @Component({
   selector: 'app-create-company',

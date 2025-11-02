@@ -3,8 +3,8 @@ import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { routes } from './app.routes';
-import { APP_CONFIG } from './core/models/config';
+import { routes } from '@/app.routes';
+import { APP_CONFIG } from '@/core/models/config';
 
 // Material imports for services
 import { MatSnackBarModule } from '@angular/material/snack-bar';

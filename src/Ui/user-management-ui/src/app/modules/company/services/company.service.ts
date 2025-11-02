@@ -1,10 +1,11 @@
+import { ApiService } from '@/core/services/http/api.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateCompanyRequestDto } from '../dtos/create-company-request.dto';
-import { CreateCompanyResponseDto } from '../dtos/create-company-response.dto';
-import { CompanyDto } from '../dtos/company.dto';
-import { ApiService } from '../../../core/services/http/api.service';
-import { IPageList } from '../../../core/models/pagination';
+import { CreateCompanyRequestDto } from '@/modules/company/dtos/create-company-request.dto';
+import { CreateCompanyResponseDto } from '@/modules/company/dtos/create-company-response.dto';
+import { CompanyDto } from '@/modules/company/dtos/company.dto';
+import { IPageList } from '@/core/models/pagination';
+
 
 @Injectable({
   providedIn: 'root'
@@ -46,9 +47,5 @@ export class CompanyService {
     }
 
     return this.apiService.get<IPageList<CompanyDto>>(this.endpoint, params);
-  }
-
-  getCompanyById(id: string): Observable<CompanyDto> {
-    return this.apiService.get<CompanyDto>(`${this.endpoint}/${id}`);
   }
 }

@@ -1,4 +1,4 @@
-import { AppConfig } from "../core/models/config";
+import { AppConfig } from "@/core/models/config";
 
 export const environment: AppConfig = {
   production: false,

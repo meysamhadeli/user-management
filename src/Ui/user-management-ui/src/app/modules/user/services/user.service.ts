@@ -3,11 +3,12 @@ import { Observable } from 'rxjs';
 import { CreateUserResponseDto } from '../dtos/create-user-response.dto';
 import { CreateUserRequestDto } from '../dtos/create-user-request.dto';
 import { HttpParams } from '@angular/common/http';
-import { CheckEmailAvailabilityRequestDto } from '../dtos/check-email-availability-request.dto';
-import { CheckEmailAvailabilityResponseDto } from '../dtos/check-email-availability-response.dto';
-import { CheckUsernameAvailabilityRequestDto } from '../dtos/check-username-availability-request.dto';
-import { CheckUsernameAvailabilityResponseDto } from '../dtos/check-username-availability-response.dto';
-import { ApiService } from '../../../core/services/http/api.service';
+import { ApiService } from '@/core/services/http/api.service';
+import { CheckUsernameAvailabilityRequestDto } from '@/modules/user/dtos/check-username-availability-request.dto';
+import { CheckUsernameAvailabilityResponseDto } from '@/modules/user/dtos/check-username-availability-response.dto';
+import { CheckEmailAvailabilityRequestDto } from '@/modules/user/dtos/check-email-availability-request.dto';
+import { CheckEmailAvailabilityResponseDto } from '@/modules/user/dtos/check-email-availability-response.dto';
+
 
 @Injectable({
   providedIn: 'root'

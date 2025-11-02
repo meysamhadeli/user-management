@@ -8,10 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { RegistrationWizardService } from '../../services/registration-wizard.service';
-import { UserService } from '../../services/user.service';
-import { CheckEmailAvailabilityRequestDto } from '../../dtos/check-email-availability-request.dto';
-import { CheckUsernameAvailabilityRequestDto } from '../../dtos/check-username-availability-request.dto';
+import { RegistrationWizardService } from '@/modules/user/services/registration-wizard.service';
+import { UserService } from '@/modules/user/services/user.service';
+import { CheckUsernameAvailabilityRequestDto } from '@/modules/user/dtos/check-username-availability-request.dto';
+import { CheckEmailAvailabilityRequestDto } from '@/modules/user/dtos/check-email-availability-request.dto';
+
 
 @Component({
   selector: 'app-user-step',

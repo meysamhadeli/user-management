@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, Inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { APP_CONFIG, AppConfig } from '../../models/config';
-import { NotificationService } from '../notification.service';
+import { APP_CONFIG, AppConfig } from '@/core/models/config';
+import { NotificationService } from '@/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'

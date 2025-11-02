@@ -1,10 +1,10 @@
+import { IPageList } from '@/core/models/pagination';
+import { ApiService } from '@/core/services/http/api.service';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../../core/services/http/api.service';
-import { IPageList } from '../../../core/models/pagination';
-import { IndustryDto } from '../dtos/industry.dto';
-import { CreateIndustryRequestDto } from '../dtos/create-industry-request.dto';
-import { CreateIndustryResponseDto } from '../dtos/create-industry-response.dto';
+import { IndustryDto } from '@/modules/industry/dtos/industry.dto';
+import { CreateIndustryRequestDto } from '@/modules/industry/dtos/create-industry-request.dto';
+import { CreateIndustryResponseDto } from '@/modules/industry/dtos/create-industry-response.dto';
 
 @Injectable({
   providedIn: 'root'

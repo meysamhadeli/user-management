@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
-import { RegistrationWizardService } from '../../services/registration-wizard.service';
+import { RegistrationWizardService } from '@/modules/user/services/registration-wizard.service';
 
 @Component({
   selector: 'app-summary-step',
