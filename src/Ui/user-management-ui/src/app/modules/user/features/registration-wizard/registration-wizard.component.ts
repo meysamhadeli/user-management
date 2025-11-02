@@ -10,8 +10,6 @@ import { UserStepComponent } from '../user-step/user-step.component';
 import { SummaryStepComponent } from '../summary-step/summary-step.component';
 import { CompletionStepComponent } from '../completion-step/completion-step.component';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
-import { IndustryDto } from '../../../industry/dtos/industry.dto';
-import { IndustryService } from '../../../industry/services/industry.service ';
 
 @Component({
   selector: 'app-registration-wizard',
@@ -34,7 +32,6 @@ export class RegistrationWizardComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private wizardService = inject(RegistrationWizardService);
-  private industryService = inject(IndustryService);
   private router = inject(Router);
 
   // Form groups for each step (required for linear stepper)
@@ -42,20 +39,20 @@ export class RegistrationWizardComponent implements OnInit {
   userStepForm: FormGroup;
   termsStepForm: FormGroup;
 
-  industries: IndustryDto[] = [];
-
   constructor() {
     // Initialize form groups for each step
     this.companyStepForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(200)]],
-      industryId: ['', [Validators.required]]
+      name: ['', [Validators.required]],
+      companyId: ['', [Validators.required]],
+      industryId: ['', [Validators.required]],
+      industryName: [''] // Add industryName field
     });
 
     this.userStepForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      email: ['', [Validators.email]],
+      email: ['', [Validators.required, Validators.email]], // Email is now required
       password: ['', [Validators.required, Validators.minLength(6)]],
       passwordRepetition: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
@@ -67,7 +64,6 @@ export class RegistrationWizardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadIndustries();
     this.loadExistingData();
   }
 
@@ -80,17 +76,6 @@ export class RegistrationWizardComponent implements OnInit {
       return { passwordMismatch: true };
     }
     return null;
-  }
-
-  loadIndustries(): void {
-    this.industryService.getIndustries().subscribe({
-      next: (response) => {
-        this.industries = response.items || [];
-      },
-      error: (error) => {
-        console.error('Failed to load industries:', error);
-      }
-    });
   }
 
   loadExistingData(): void {

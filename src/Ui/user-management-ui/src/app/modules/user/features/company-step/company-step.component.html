@@ -1,54 +1,113 @@
 <div class="p-6">
   <div class="text-center mb-6">
-    <h2 class="text-2xl font-bold text-gray-900 mb-2">Company Information</h2>
-    <p class="text-gray-600">Step 1 of 4 - Tell us about your company</p>
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Company Selection</h2>
+    <p class="text-gray-600">Step 1 of 4 - Select your company from the list</p>
   </div>
 
   <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="space-y-6">
     
-    <!-- Company Name -->
+    <!-- Company Selection -->
     <div class="space-y-2">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label class="text-gray-700 font-medium">Company Name</mat-label>
-        <input 
-          matInput 
-          formControlName="name" 
-          placeholder="Enter your company name"
-          class="placeholder-gray-400 text-gray-900">
+        <mat-label class="text-gray-700 font-medium">Select Company</mat-label>
+        <mat-select 
+          formControlName="name"
+          (selectionChange)="onCompanySelected($event.value)"
+          [disabled]="isLoading">
+          <mat-option class="text-gray-500">-- Select your company --</mat-option>
+          <mat-option 
+            *ngFor="let company of companies" 
+            [value]="company"
+            class="text-gray-900">
+            {{ company.name }}
+          </mat-option>
+        </mat-select>
         <mat-icon matSuffix class="text-gray-400">business</mat-icon>
+
+        <!-- Loading indicator -->
+        <mat-progress-spinner 
+          *ngIf="isLoading"
+          matSuffix
+          diameter="20"
+          mode="indeterminate"
+          class="!mr-2">
+        </mat-progress-spinner>
         
         <mat-error *ngIf="companyForm.get('name')?.hasError('required')" 
                   class="text-red-600 text-sm font-medium">
-          ✗ Company name is required
-        </mat-error>
-        <mat-error *ngIf="companyForm.get('name')?.hasError('maxlength')" 
-                  class="text-red-600 text-sm font-medium">
-          ✗ Company name must not exceed 200 characters
+          ✗ Please select a company
         </mat-error>
       </mat-form-field>
     </div>
 
-    <!-- Industry Selection -->
-    <div class="space-y-2">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label class="text-gray-700 font-medium">Industry</mat-label>
-        <mat-select 
-          formControlName="industryId">
-          <mat-option class="text-gray-500">-- Select an industry --</mat-option>
-          <mat-option 
-            *ngFor="let industry of industries" 
-            [value]="industry.id"
-            class="text-gray-900">
-            {{ industry.name }}
-          </mat-option>
-        </mat-select>
-        <mat-icon matSuffix class="text-gray-400">category</mat-icon>
-        
-        <mat-error *ngIf="companyForm.get('industryId')?.hasError('required')" 
-                  class="text-red-600 text-sm font-medium">
-          ✗ Please select an industry
-        </mat-error>
-      </mat-form-field>
+    <!-- Selected Company Information -->
+    <div *ngIf="selectedCompany" class="space-y-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <h3 class="text-lg font-semibold text-blue-800 mb-3">Selected Company Information</h3>
+      
+      <!-- Company Name Display -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label class="text-gray-700 font-medium">Company Name</mat-label>
+            <input 
+              matInput 
+              [value]="selectedCompany.name"
+              disabled
+              class="text-gray-900 bg-gray-100">
+            <mat-icon matSuffix class="text-gray-400">business</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Industry Display -->
+        <div>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label class="text-gray-700 font-medium">Industry</mat-label>
+            <input 
+              matInput 
+              [value]="getIndustryName()"
+              disabled
+              class="text-gray-900 bg-gray-100">
+            <mat-icon matSuffix class="text-gray-400">category</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Additional Company Info -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div class="text-center p-3 bg-white rounded-lg border border-blue-100">
+          <p class="text-blue-600 font-semibold">Company ID</p>
+          <p class="text-gray-700 font-mono text-xs">{{ selectedCompany.id }}</p>
+        </div>
+        <div class="text-center p-3 bg-white rounded-lg border border-blue-100" *ngIf="selectedCompany.industry?.description">
+          <p class="text-blue-600 font-semibold">Industry Description</p>
+          <p class="text-gray-700 text-xs">{{ selectedCompany.industry?.description }}</p>
+        </div>
+      </div>
+
+      <!-- Clear Selection Button -->
+      <div class="flex justify-end pt-2">
+        <button 
+          mat-stroked-button 
+          type="button"
+          (click)="clearSelection()"
+          class="text-red-600 border-red-200 hover:bg-red-50">
+          <mat-icon class="!w-4 !h-4 mr-1">close</mat-icon>
+          Change Company
+        </button>
+      </div>
+    </div>
+
+    <!-- No Companies Available Message -->
+    <div *ngIf="!isLoading && companies.length === 0" class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <div class="flex items-center gap-3">
+        <mat-icon class="text-yellow-600 !w-6 !h-6">warning</mat-icon>
+        <div>
+          <p class="text-yellow-800 font-medium">No companies available</p>
+          <p class="text-yellow-700 text-sm mt-1">
+            There are no companies registered in the system. Please contact your administrator to create a company first.
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Action -->
@@ -57,7 +116,7 @@
         mat-raised-button 
         color="primary" 
         type="submit"
-        [disabled]="companyForm.invalid"
+        [disabled]="companyForm.invalid || !selectedCompany"
         class="px-8 py-3 bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
         
         <div class="flex items-center gap-2 justify-center">

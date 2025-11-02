@@ -10,11 +10,13 @@ import { IPageList } from '../../../core/models/pagination';
   providedIn: 'root'
 })
 export class CompanyService {
+  private endpoint = 'company';
+
   constructor(private apiService: ApiService) {}
 
   createCompany(request: CreateCompanyRequestDto): Observable<CreateCompanyResponseDto> {
     return this.apiService.post<CreateCompanyRequestDto, CreateCompanyResponseDto>(
-      'company', 
+      this.endpoint, 
       request,
       undefined,
       { 
@@ -43,10 +45,10 @@ export class CompanyService {
       params.SortOrder = sortOrder;
     }
 
-    return this.apiService.get<IPageList<CompanyDto>>('companies', params);
+    return this.apiService.get<IPageList<CompanyDto>>(this.endpoint, params);
   }
 
   getCompanyById(id: string): Observable<CompanyDto> {
-    return this.apiService.get<CompanyDto>(`companies/${id}`);
+    return this.apiService.get<CompanyDto>(`${this.endpoint}/${id}`);
   }
 }

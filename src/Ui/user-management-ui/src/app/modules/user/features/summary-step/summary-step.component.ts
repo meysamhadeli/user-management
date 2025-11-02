@@ -8,8 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
-import { IndustryDto } from '../../../industry/dtos/industry.dto';
-import { IndustryService } from '../../../industry/services/industry.service ';
 
 @Component({
   selector: 'app-summary-step',
@@ -32,36 +30,23 @@ export class SummaryStepComponent implements OnInit {
   @Output() previous = new EventEmitter<void>();
 
   private wizardService = inject(RegistrationWizardService);
-  private industryService = inject(IndustryService);
 
   registrationData: any;
-  industries: IndustryDto[] = [];
-  selectedIndustryName: string = '';
 
   constructor() {}
 
   ngOnInit(): void {
     this.registrationData = this.wizardService.getCurrentData();
-    this.loadIndustries();
+    console.log('Registration Data in Summary:', this.registrationData);
   }
 
-  loadIndustries(): void {
-    this.industryService.getIndustries().subscribe({
-      next: (response) => {
-        this.industries = response.items || [];
-        this.findSelectedIndustryName();
-      },
-      error: (error) => {
-        console.error('Failed to load industries:', error);
-      }
-    });
+  getIndustryName(): string {
+    // Use the stored industryName from company step
+    return this.registrationData.company.industryName || 'Unknown Industry';
   }
 
-  findSelectedIndustryName(): void {
-    const selectedIndustry = this.industries.find(industry => 
-      industry.id === this.registrationData.company.industryId
-    );
-    this.selectedIndustryName = selectedIndustry ? selectedIndustry.name : 'Unknown Industry';
+  getCompanyName(): string {
+    return this.registrationData.company.name || 'Unknown Company';
   }
 
   onSubmit(): void {

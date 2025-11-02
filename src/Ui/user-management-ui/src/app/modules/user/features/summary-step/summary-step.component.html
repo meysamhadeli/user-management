@@ -16,11 +16,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <p class="text-sm text-gray-600">Company Name</p>
-          <p class="font-medium text-gray-900">{{ registrationData.company.name }}</p>
+          <p class="font-medium text-gray-900">{{ getCompanyName() }}</p>
         </div>
         <div>
           <p class="text-sm text-gray-600">Industry</p>
-          <p class="font-medium text-gray-900">{{ selectedIndustryName }}</p>
+          <p class="font-medium text-gray-900">{{ getIndustryName() }}</p>
         </div>
       </div>
     </mat-card>
@@ -47,7 +47,7 @@
         </div>
         <div>
           <p class="text-sm text-gray-600">Email</p>
-          <p class="font-medium text-gray-900">{{ registrationData.user.email || 'Not provided' }}</p>
+          <p class="font-medium text-gray-900">{{ registrationData.user.email }}</p>
         </div>
       </div>
     </mat-card>

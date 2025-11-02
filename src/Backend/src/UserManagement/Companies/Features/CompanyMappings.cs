@@ -10,15 +10,15 @@ public static class CompanyMappings
 {
     public static CompanyDto ToDto(this Company company)
     {
-        ArgumentNullException.ThrowIfNull(company);
+        var industry = company.Industry != null ?
+                           new IndustryDto(company.Industry.Id, company.Industry.Name, company.Industry.Description) :
+                           null;
 
-        return new CompanyDto(
-            company.Id,
-            company.Name,
-            company?.Industry != null
-                ? new IndustryDto(company.Industry.Id, company.Industry.Name, company.Industry.Description)
-                : null
-        );
+        return new CompanyDto(company.Id, company.Name, industry)
+               {
+                   Id = company.Id,
+                   Name = company.Name,
+               };
     }
 
     public static Company ToModel(this CreateCompanyCommand command, Guid id)

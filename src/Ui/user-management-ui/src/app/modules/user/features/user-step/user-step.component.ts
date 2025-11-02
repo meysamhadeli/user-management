@@ -10,8 +10,8 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
 import { of } from 'rxjs';
 import { RegistrationWizardService } from '../../services/registration-wizard.service';
 import { UserService } from '../../services/user.service';
-import { CheckUsernameAvailabilityRequestDto } from '../../dtos/check-username-availability-request.dto';
 import { CheckEmailAvailabilityRequestDto } from '../../dtos/check-email-availability-request.dto';
+import { CheckUsernameAvailabilityRequestDto } from '../../dtos/check-username-availability-request.dto';
 
 @Component({
   selector: 'app-user-step',

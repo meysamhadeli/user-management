@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 
 export interface CompanyData {
   name: string;
-  industryId: string;
+  companyId: string; 
+  industryId: string; 
+  industryName: string; 
 }
 
 export interface UserData {
@@ -11,7 +13,7 @@ export interface UserData {
   userName: string;
   password: string;
   passwordRepetition: string;
-  email?: string;
+  email: string;
 }
 
 export interface TermsData {
@@ -33,7 +35,9 @@ export class RegistrationWizardService {
   private registrationData: RegistrationData = {
     company: {
       name: '',
-      industryId: ''
+      companyId: '', // Initialize companyId
+      industryId: '', // Initialize industryId
+      industryName: '' // Initialize industryName
     },
     user: {
       firstName: '',
@@ -61,15 +65,16 @@ export class RegistrationWizardService {
     return this.registrationData;
   }
 
-  updateCompanyData(companyData: CompanyData): void {
+  updateCompanyData(companyData: Partial<CompanyData>): void {
     this.registrationData.company = { ...this.registrationData.company, ...companyData };
+    console.log('Updated company data:', this.registrationData.company);
   }
 
-  updateUserData(userData: UserData): void {
+  updateUserData(userData: Partial<UserData>): void {
     this.registrationData.user = { ...this.registrationData.user, ...userData };
   }
 
-  updateTermsData(termsData: TermsData): void {
+  updateTermsData(termsData: Partial<TermsData>): void {
     this.registrationData.terms = { ...this.registrationData.terms, ...termsData };
   }
 
@@ -82,7 +87,9 @@ export class RegistrationWizardService {
     this.registrationData = {
       company: {
         name: '',
-        industryId: ''
+        companyId: '',
+        industryId: '',
+        industryName: ''
       },
       user: {
         firstName: '',
