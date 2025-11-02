@@ -26,7 +26,7 @@ public static class SharedInfrastructureExtensions
         builder.Services.AddAspnetOpenApi();
         builder.Services.AddCustomVersioning();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddCustomMediatR();
+        builder.Services.AddCustomMediatR(assembly: Assembly.GetExecutingAssembly());
 
         builder.AddMinimalEndpoints(assemblies: Assembly.GetExecutingAssembly());
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

@@ -1,17 +1,11 @@
 using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Web;
 using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Data;
 using UserManagement.Industries.Exceptions;
 using UserManagement.Industries.Models;
 
 namespace UserManagement.Industries.Features.CreatingIndustry.V1;
-
-public record CreateIndustryRequestDto(string Name, string Description);
-
-public record CreateIndustryResponseDto(Guid Id);
 
 public record CreateIndustryCommand(string Name, string Description) : ICommand<CreateIndustryResult>
 {
@@ -35,33 +29,6 @@ public class CreateIndustryValidator : AbstractValidator<CreateIndustryCommand>
             .WithMessage("Description is required")
             .MaximumLength(500)
             .WithMessage("Description must not exceed 500 characters");
-    }
-}
-
-public class CreateIndustryEndpoint : IMinimalEndpoint
-{
-    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
-    {
-        builder
-            .MapPost(
-                $"{EndpointConfig.BaseApiPath}/industry",
-                async (CreateIndustryRequestDto request, IMediator mediator, CancellationToken cancellationToken) =>
-                {
-                    var command = new CreateIndustryCommand(request.Name, request.Description);
-                    var result = await mediator.Send(command, cancellationToken);
-                    var response = new CreateIndustryResponseDto(result.Id);
-                    return Results.CreatedAtRoute("GetIndustryById", new { id = result.Id }, response);
-                }
-            )
-            .WithApiVersionSet(builder.NewApiVersionSet("Industry").Build())
-            .WithName("CreateIndustry")
-            .Produces<CreateIndustryResponseDto>(StatusCodes.Status201Created)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status409Conflict)
-            .WithOpenApi()
-            .HasApiVersion(1.0);
-
-        return builder;
     }
 }
 

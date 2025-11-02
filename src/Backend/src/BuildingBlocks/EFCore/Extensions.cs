@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.EFCore;
@@ -54,12 +55,13 @@ public static class Extensions
         return builder.Services;
     }
 
-    public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app)
+    public static WebApplication UseMigration<TContext>(this WebApplication app)
         where TContext : DbContext, IDbContext
     {
-        MigrateAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
+        MigrateAsync<TContext>(app.Services).GetAwaiter().GetResult();
 
-        SeedAsync(app.ApplicationServices).GetAwaiter().GetResult();
+        if (!app.Environment.IsEnvironment("test"))
+            SeedAsync(app.Services).GetAwaiter().GetResult();
 
         return app;
     }

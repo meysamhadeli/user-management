@@ -1,0 +1,19 @@
+<mat-toolbar color="primary" class="shadow-md">
+  <span class="text-lg font-semibold text-white">{{ title() }}</span>
+  <span class="flex-1"></span>
+  <div class="flex gap-2">
+    <button mat-button routerLink="/user/register" class="text-white hover:bg-white/20 transition-colors">
+      User Registration
+    </button>
+    <button mat-button routerLink="/company/create" class="text-white hover:bg-white/20 transition-colors">
+      Create Company
+    </button>
+    <button mat-button routerLink="/industry/create" class="text-white hover:bg-white/20 transition-colors">
+      Create Industry
+    </button>
+  </div>
+</mat-toolbar>
+
+<main class="min-h-screen bg-gray-50">
+  <router-outlet></router-outlet>
+</main>

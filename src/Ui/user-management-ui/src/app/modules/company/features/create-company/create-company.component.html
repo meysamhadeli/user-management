@@ -1,0 +1,137 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md mx-auto">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Create New Company</h1>
+      <p class="text-gray-600">Register your company in the system</p>
+    </div>
+
+    <!-- Form Card -->
+    <mat-card class="shadow-lg rounded-xl border-0 bg-white">
+      <mat-card-content class="p-6">
+        <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          
+          <!-- Company Name -->
+          <div class="form-field-container">
+            <mat-form-field appearance="outline" class="w-full material-form-field">
+              <mat-label class="text-gray-700">Company Name</mat-label>
+              <input 
+                matInput 
+                formControlName="name" 
+                placeholder="Enter company name"
+                class="material-input">
+              <mat-icon matSuffix class="material-icons text-gray-400 md-20">business</mat-icon>
+              
+              <mat-error *ngIf="companyForm.get('name')?.hasError('required')" 
+                        class="error-message">
+                Company name is required
+              </mat-error>
+              <mat-error *ngIf="companyForm.get('name')?.hasError('maxlength')" 
+                        class="error-message">
+                Company name must not exceed 200 characters
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Industry Selection -->
+          <div class="form-field-container">
+            <mat-form-field appearance="outline" class="w-full material-form-field">
+              <mat-label class="text-gray-700">Industry</mat-label>
+              <mat-select 
+                formControlName="industryId" 
+                [disabled]="loadingIndustries || !!industriesError"
+                class="material-select">
+                <mat-option class="text-gray-500">-- Select Industry --</mat-option>
+                <mat-option 
+                  *ngFor="let industry of industries" 
+                  [value]="industry.id"
+                  class="text-gray-900">
+                  {{ industry.name }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix class="material-icons text-gray-400 md-20">category</mat-icon>
+              
+              <!-- Loading State -->
+              <mat-hint *ngIf="loadingIndustries" class="loading-hint">
+                <div class="flex items-center gap-2">
+                  <mat-spinner diameter="16" class="text-blue-600"></mat-spinner>
+                  <span>Loading industries...</span>
+                </div>
+              </mat-hint>
+              
+              <!-- Error State -->
+              <mat-hint *ngIf="industriesError && !loadingIndustries" class="error-hint">
+                <div class="flex items-center gap-2 text-red-600">
+                  <mat-icon class="material-icons md-18">error</mat-icon>
+                  <span>{{ industriesError }}</span>
+                  <button 
+                    type="button" 
+                    (click)="retryLoadIndustries()"
+                    class="text-blue-600 hover:text-blue-700 underline text-sm">
+                    Retry
+                  </button>
+                </div>
+              </mat-hint>
+              
+              <!-- No Industries State -->
+              <mat-hint *ngIf="!loadingIndustries && !industriesError && industries.length === 0" 
+                       class="info-hint">
+                <div class="flex items-center gap-2 text-amber-600">
+                  <mat-icon class="material-icons md-18">info</mat-icon>
+                  <span>No industries available</span>
+                </div>
+              </mat-hint>
+              
+              <mat-error *ngIf="companyForm.get('industryId')?.hasError('required')" 
+                        class="error-message">
+                Industry is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button 
+              mat-stroked-button 
+              type="button" 
+              routerLink="/"
+              class="action-button action-button--secondary">
+              Cancel
+            </button>
+            
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit"
+              [disabled]="companyForm.invalid || isLoading || industries.length === 0"
+              class="action-button action-button--primary">
+              
+              <div class="button-content">
+                <mat-spinner 
+                  *ngIf="isLoading" 
+                  diameter="20" 
+                  class="button-spinner">
+                </mat-spinner>
+                <span class="button-text">
+                  {{ isLoading ? 'Creating...' : 'Create Company' }}
+                </span>
+              </div>
+            </button>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Help Text -->
+    <div class="mt-6 text-center">
+      <p class="text-gray-500 text-sm">
+        Need to create an industry first? 
+        <a routerLink="/industry/create" class="text-blue-600 hover:text-blue-700 font-medium underline">
+          Create Industry
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

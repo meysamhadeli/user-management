@@ -1,27 +1,11 @@
 using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Utils;
-using BuildingBlocks.Web;
 using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Data;
 using UserManagement.Users.Exceptions;
 
 namespace UserManagement.Users.Feautures.CompletingUserRegistration.V1;
-
-public record CompleteUserRegistrationRequestDto(
-    Guid CompanyId,
-    string FirstName,
-    string LastName,
-    string UserName,
-    string Password,
-    string PasswordRepetition,
-    string? Email,
-    bool AcceptTermsOfService,
-    bool AcceptPrivacyPolicy
-);
-
-public record CompleteUserRegistrationResponseDto(Guid UserId);
 
 public record CompleteUserRegistrationCommand(
     Guid CompanyId,
@@ -74,48 +58,6 @@ public class CompleteUserRegistrationValidator : AbstractValidator<CompleteUserR
         RuleFor(x => x.AcceptTermsOfService).Equal(true).WithMessage("You must accept the terms of service");
 
         RuleFor(x => x.AcceptPrivacyPolicy).Equal(true).WithMessage("You must accept the privacy policy");
-    }
-}
-
-public class CompleteUserRegistrationEndpoint : IMinimalEndpoint
-{
-    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
-    {
-        builder
-            .MapPost(
-                $"{EndpointConfig.BaseApiPath}/user/register",
-                async (
-                    CompleteUserRegistrationRequestDto request,
-                    IMediator mediator,
-                    CancellationToken cancellationToken
-                ) =>
-                {
-                    var command = new CompleteUserRegistrationCommand(
-                        request.CompanyId,
-                        request.FirstName,
-                        request.LastName,
-                        request.UserName,
-                        request.Password,
-                        request.PasswordRepetition,
-                        request.Email,
-                        request.AcceptTermsOfService,
-                        request.AcceptPrivacyPolicy
-                    );
-
-                    await mediator.Send(command, cancellationToken);
-                    return Results.Created();
-                }
-            )
-            .WithApiVersionSet(builder.NewApiVersionSet("User").Build())
-            .WithName("CompleteUserRegistration")
-            .Produces<CompleteUserRegistrationResponseDto>(StatusCodes.Status201Created)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status409Conflict)
-            .WithOpenApi()
-            .HasApiVersion(1.0);
-
-        return builder;
     }
 }
 

@@ -71,10 +71,10 @@ public static class Extensions
                                 exceptionType.GetType().Name,
                                 context.Response.StatusCode = StatusCodes.Status404NotFound
                             ),
-                            AppException => (
+                            AppException appException => (
                                 exceptionType.Message,
                                 exceptionType.GetType().Name,
-                                context.Response.StatusCode = StatusCodes.Status400BadRequest
+                                context.Response.StatusCode = (int)appException.StatusCode
                             ),
                             DbUpdateConcurrencyException => (
                                 exceptionType.Message,

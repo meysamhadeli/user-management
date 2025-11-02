@@ -26,4 +26,22 @@ public static class UserMappings
             CreatedAt = DateTime.UtcNow,
         };
     }
+    
+    
+    public static CompleteUserRegistrationCommand ToCommand(this  CompleteUserRegistrationRequestDto request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return new CompleteUserRegistrationCommand(
+            request.CompanyId,
+            request.FirstName,
+            request.LastName,
+            request.UserName,
+            request.Password,
+            request.PasswordRepetition,
+            request.Email,
+            request.AcceptTermsOfService,
+            request.AcceptPrivacyPolicy
+        );
+    }
 }

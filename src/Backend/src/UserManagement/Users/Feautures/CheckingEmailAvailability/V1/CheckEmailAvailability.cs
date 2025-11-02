@@ -1,15 +1,9 @@
 using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Web;
 using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Data;
 
-namespace UserManagement.Users.Features.CheckingEmailAvailability.V1;
-
-public record CheckEmailAvailabilityRequestDto(string Email);
-
-public record CheckEmailAvailabilityResponseDto(bool IsAvailable);
+namespace UserManagement.Users.Feautures.CheckingEmailAvailability.V1;
 
 public record CheckEmailAvailabilityCommand(string Email) : IQuery<CheckEmailAvailabilityResult>;
 
@@ -23,36 +17,6 @@ public class CheckEmailAvailabilityCommandValidator : AbstractValidator<CheckEma
             .EmailAddress()
             .WithMessage("Invalid email format")
             .When(x => !string.IsNullOrWhiteSpace(x.Email));
-    }
-}
-
-public class CheckEmailAvailabilityEndpoint : IMinimalEndpoint
-{
-    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
-    {
-        builder
-            .MapGet(
-                $"{EndpointConfig.BaseApiPath}/user/check-email-availability",
-                async (
-                    [AsParameters] CheckEmailAvailabilityRequestDto request,
-                    IMediator mediator,
-                    CancellationToken cancellationToken
-                ) =>
-                {
-                    var command = new CheckEmailAvailabilityCommand(request.Email);
-                    var result = await mediator.Send(command, cancellationToken);
-                    var response = new CheckEmailAvailabilityResponseDto(result.IsAvailable);
-                    return Results.Ok(response);
-                }
-            )
-            .WithApiVersionSet(builder.NewApiVersionSet("User").Build())
-            .WithName("CheckEmailAvailability")
-            .Produces<CheckEmailAvailabilityResponseDto>(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithOpenApi()
-            .HasApiVersion(1.0);
-
-        return builder;
     }
 }
 
@@ -76,6 +40,6 @@ public class CheckEmailAvailabilityHandler : IQueryHandler<CheckEmailAvailabilit
             .Users.AsNoTracking()
             .AnyAsync(x => x.Email == command.Email, cancellationToken);
 
-        return new CheckEmailAvailabilityResult(emailExists);
+        return new CheckEmailAvailabilityResult(!emailExists);
     }
 }

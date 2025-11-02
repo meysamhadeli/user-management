@@ -1,0 +1,102 @@
+<div class="p-6">
+  <div class="text-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">Review & Submit</h2>
+    <p class="text-gray-600">Step 3 of 4 - Confirm your information</p>
+  </div>
+
+  <div class="space-y-6">
+    
+    <!-- Company Summary -->
+    <mat-card class="shadow-md rounded-xl border border-gray-200">
+      <mat-card-header class="pb-3 border-b border-gray-100">
+        <mat-card-title class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <mat-icon class="text-blue-600 !w-5 !h-5">business</mat-icon>
+          Company Information
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4 space-y-2">
+        <p class="text-gray-700"><span class="font-medium">Name:</span> {{ data.company.name }}</p>
+        <p class="text-gray-700"><span class="font-medium">Industry:</span> {{ getIndustryName(data.company.industryId) }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- User Summary -->
+    <mat-card class="shadow-md rounded-xl border border-gray-200">
+      <mat-card-header class="pb-3 border-b border-gray-100">
+        <mat-card-title class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <mat-icon class="text-green-600 !w-5 !h-5">person</mat-icon>
+          User Information
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4 space-y-2">
+        <p class="text-gray-700"><span class="font-medium">Name:</span> {{ data.user.firstName }} {{ data.user.lastName }}</p>
+        <p class="text-gray-700"><span class="font-medium">Username:</span> {{ data.user.userName }}</p>
+        <p class="text-gray-700"><span class="font-medium">Email:</span> {{ data.user.email || 'Not provided' }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Terms Form -->
+    <form [formGroup]="termsForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h3 class="font-semibold text-yellow-800 mb-3 flex items-center gap-2">
+          <mat-icon class="text-yellow-600 !w-5 !h-5">warning</mat-icon>
+          Terms & Conditions
+        </h3>
+        
+        <div class="space-y-3">
+          <mat-checkbox formControlName="acceptTermsOfService" color="primary" class="w-full">
+            <div class="ml-2">
+              <span class="font-medium text-gray-900">I accept the Terms of Service</span>
+              <p class="text-sm text-gray-600">I have read and agree to the terms and conditions</p>
+            </div>
+          </mat-checkbox>
+
+          <mat-checkbox formControlName="acceptPrivacyPolicy" color="primary" class="w-full">
+            <div class="ml-2">
+              <span class="font-medium text-gray-900">I accept the Privacy Policy</span>
+              <p class="text-sm text-gray-600">I understand how my data will be used and stored</p>
+            </div>
+          </mat-checkbox>
+        </div>
+
+        <!-- Error messages -->
+        <div *ngIf="termsForm.get('acceptTermsOfService')?.hasError('required') && termsForm.get('acceptTermsOfService')?.touched" 
+             class="text-red-600 text-sm font-medium mt-2">
+          ✗ You must accept the terms of service
+        </div>
+        <div *ngIf="termsForm.get('acceptPrivacyPolicy')?.hasError('required') && termsForm.get('acceptPrivacyPolicy')?.touched" 
+             class="text-red-600 text-sm font-medium mt-2">
+          ✗ You must accept the privacy policy
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-between items-center pt-4 border-t border-gray-100">
+        <button 
+          mat-stroked-button 
+          type="button" 
+          (click)="onPrevious()"
+          class="w-full sm:w-auto px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 rounded-lg font-medium">
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-gray-500 !w-5 !h-5">arrow_back</mat-icon>
+            <span>Back to User Info</span>
+          </div>
+        </button>
+        
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          [disabled]="termsForm.invalid"
+          class="w-full sm:w-auto px-8 py-3 bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
+          
+          <div class="flex items-center gap-2 justify-center">
+            <mat-icon class="text-white !w-5 !h-5">check_circle</mat-icon>
+            <span class="font-semibold">Complete Registration</span>
+          </div>
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>

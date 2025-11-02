@@ -1,0 +1,71 @@
+<div class="space-y-2">
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label class="text-gray-700 font-medium">{{ label }}</mat-label>
+    
+    <input
+      type="text"
+      matInput
+      [formControl]="companyControl"
+      [matAutocomplete]="auto"
+      [placeholder]="placeholder"
+      class="placeholder-gray-400 text-gray-900">
+    
+    <mat-icon matSuffix class="text-gray-400">business</mat-icon>
+
+    <!-- Clear button when there's a selection -->
+    <button 
+      *ngIf="companyControl.value" 
+      matSuffix 
+      mat-icon-button 
+      (click)="clearSelection()"
+      type="button"
+      class="!mr-2">
+      <mat-icon class="text-gray-400 hover:text-gray-600">close</mat-icon>
+    </button>
+
+    <!-- Loading spinner -->
+    <mat-progress-spinner 
+      *ngIf="isLoading"
+      matSuffix
+      diameter="20"
+      mode="indeterminate"
+      class="!mr-2">
+    </mat-progress-spinner>
+
+    <!-- Error message -->
+    <mat-error *ngIf="searchError" class="text-red-600 text-sm font-medium">
+      {{ searchError }}
+    </mat-error>
+
+    <mat-error *ngIf="companyControl.hasError('required') && companyControl.touched" 
+              class="text-red-600 text-sm font-medium">
+      ✗ Company selection is required
+    </mat-error>
+  </mat-form-field>
+
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCompany" (optionSelected)="onCompanySelected($event.option.value)">
+  <mat-option 
+    *ngFor="let company of filteredCompanies$ | async" 
+    [value]="company"
+    class="text-gray-900">
+    
+    <div class="flex flex-col py-2">
+      <span class="font-medium text-gray-900">{{ company.name }}</span>
+      <!-- Fixed: Changed industryName to industry -->
+      <span class="text-sm text-gray-500" *ngIf="company.industry">
+        Industry: {{ company.industry }}
+      </span>
+      <span class="text-sm text-gray-500" *ngIf="company.userCount !== undefined">
+        Users: {{ company.userCount }}
+      </span>
+    </div>
+  </mat-option>
+
+  <!-- No results message -->
+  <mat-option *ngIf="(filteredCompanies$ | async)?.length === 0 && !isLoading && companyControl.value" disabled>
+    <div class="text-gray-500 text-center py-2">
+      No companies found matching "{{ companyControl.value }}"
+    </div>
+  </mat-option>
+</mat-autocomplete>
+</div>

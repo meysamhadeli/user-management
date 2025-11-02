@@ -1,0 +1,47 @@
+<div class="p-6 text-center">
+  <div class="max-w-md mx-auto">
+    
+    <!-- Success Icon -->
+    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+      <mat-icon class="text-green-600 !w-10 !h-10">check_circle</mat-icon>
+    </div>
+
+    <!-- Success Message -->
+    <h2 class="text-3xl font-bold text-gray-900 mb-3">Registration Complete!</h2>
+    <p class="text-gray-600 mb-2">Your company and user account have been successfully created.</p>
+    <p class="text-gray-500 text-sm mb-8">You can now access the system with your credentials.</p>
+
+    <!-- Action -->
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onNewRegistration()"
+      class="px-8 py-3 bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 rounded-lg font-medium shadow-md hover:shadow-lg">
+      
+      <div class="flex items-center gap-2 justify-center">
+        <mat-icon class="text-white !w-5 !h-5">person_add</mat-icon>
+        <span class="font-semibold">Register Another User</span>
+      </div>
+    </button>
+
+    <!-- Additional Options -->
+    <div class="mt-6 pt-6 border-t border-gray-200">
+      <p class="text-gray-500 text-sm mb-3">What would you like to do next?</p>
+      <div class="flex flex-col sm:flex-row gap-2 justify-center">
+        <button 
+          mat-button 
+          routerLink="/company/create"
+          class="text-blue-600 hover:text-blue-700 font-medium">
+          Create Another Company
+        </button>
+        <button 
+          mat-button 
+          routerLink="/industry/create"
+          class="text-blue-600 hover:text-blue-700 font-medium">
+          Create Another Industry
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

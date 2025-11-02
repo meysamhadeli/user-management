@@ -1,0 +1,19 @@
+// Error hint styling
+.error-hint {
+  .mat-icon {
+    color: #dc2626; // red-600
+  }
+}
+
+// Info hint styling
+.info-hint {
+  .mat-icon {
+    color: #d97706; // amber-600
+  }
+}
+
+// Disabled state when no industries
+.action-button--primary:disabled {
+  background-color: #9ca3af !important; // gray-400
+  cursor: not-allowed;
+}
