@@ -37,7 +37,7 @@
 - :sparkle: Using `Minimal API` for all endpoints.
 - :sparkle: Using `AspNetCore OpenApi` for `generating` built-in support `OpenAPI documentation` in ASP.NET Core.
 - :sparkle: Using  `OpenTelemetry` for collecting `Logs`, `Metrics` and `Distributed Traces`.
-- :sparkle: Using `Aspire` for `service discovery`, `observability`, and `local orchestration` of microservices.
+- :sparkle: Using `Aspire` for `service discovery`, `observability`, and `local orchestration` of backend and frontend.
 
 ### Frontend
 - :sparkle: Using `Angular 20` with modern features and best practices.
@@ -136,7 +136,7 @@ dotnet outdated -u
 
 > ### Aspire
 
-To run the application using the `Aspire App Host`, execute the following command from the solution root:
+To run the application using the `Aspire`, execute the following command from the solution root:
 
 ```bash
 aspire run

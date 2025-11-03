@@ -1,16 +1,17 @@
+using Humanizer;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddDockerComposeEnvironment("docker-compose");
-
-// 1. Database Services
 var pgUsername = builder.AddParameter("pg-username", "postgres", secret: true);
 var pgPassword = builder.AddParameter("pg-password", "postgres", secret: true);
 
+// 1. Database Services
 var postgres = builder
-    .AddPostgres("postgres", pgUsername, pgPassword)
+    .AddPostgres("postgres")
     .WithImage("postgres:latest")
+    .WithUserName(pgUsername)
+    .WithPassword(pgPassword)
     .WithEndpoint(
         "tcp",
         e =>
@@ -19,21 +20,45 @@ var postgres = builder
             e.TargetPort = 5432;
             e.IsProxied = true;
             e.IsExternal = false;
-        }
-    )
-    .WithArgs("-c", "wal_level=logical", "-c", "max_prepared_transactions=10");
+        });
 
 if (builder.ExecutionContext.IsPublishMode)
 {
     postgres.WithDataVolume("postgres-data").WithLifetime(ContainerLifetime.Persistent);
 }
 
+var userManagementDb = postgres.AddDatabase(name: nameof(UserManagement).Kebaberize(), databaseName: "user_management_db");
+
 // 2. Apis
-var userManagement = builder
-    .AddProject<UserManagement>("user-management")
-    .WithReference(postgres)
-    .WaitFor(postgres)
-    .WithHttpEndpoint(port: 5001, name: "user-management-http")
-    .WithHttpsEndpoint(port: 5000, name: "user-management-https");
+var userManagementApi = builder
+    .AddProject<UserManagement>("user-management-api")
+    .WithReference(userManagementDb)
+    .WaitFor(userManagementDb)
+    .WithExternalHttpEndpoints()
+    .WithEndpoint(
+        "http",
+        endpoint =>
+        {
+            endpoint.Port = 5001;
+        })
+    .WithEndpoint(
+        "https",
+        endpoint =>
+        {
+            endpoint.Port = 5000;
+        });
+
+// 3. Angular App
+builder.AddNpmApp(
+        name: "user-management-ui-app",
+        workingDirectory: "../../../../Ui/user-management-ui",
+        scriptName: "start:win")
+    .WithReference(userManagementApi)
+    .WaitFor(userManagementApi)
+    .WithHttpEndpoint(
+        env: "PORT",
+        port: 4200,
+        name: "user-management-ui-http")
+    .WithExternalHttpEndpoints();
 
 await builder.Build().RunAsync();
