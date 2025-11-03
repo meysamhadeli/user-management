@@ -1,6 +1,6 @@
 # 👤 User Management
 
-> 🚀 **A full-stack application with the latest technologies and architecture like Vertical Slice Architecture, CQRS, Aspire, .Net 9 amd Angular 20.**
+> 🚀 **A full-stack application with the latest technologies and architecture like Vertical Slice Architecture, CQRS, Aspire, .Net 9 and Angular 20.**
 
 <div>
   <a href='https://codespaces.new/meysamhadeli/user-management?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
